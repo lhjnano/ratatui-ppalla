@@ -1,0 +1,11 @@
+# Clippy configuration for ratatui-bubbles
+# https://rust-lang.github.io/rust-clippy/master/index.html
+
+# Minimum Supported Rust Version — keep in sync with the README/CI
+msrv = "1.74"
+
+# Allow slightly longer type expressions (common in TUI code)
+type-complexity-threshold = 250
+
+# Slightly higher threshold before suggesting to split a function
+cognitive-complexity-threshold = 30

@@ -17,6 +17,8 @@ crossterm = { workspace = true }
 
 [dev-dependencies]
 tokio = { workspace = true }
+insta = { workspace = true }
+pretty_assertions = { workspace = true }
 
 [[example]]
 name = "demo"
