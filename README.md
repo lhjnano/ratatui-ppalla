@@ -1,0 +1,104 @@
+# ratatui-bubbles
+
+[![CI](https://img.shields.io/github/actions/workflow/status/lhjnano/ratatui-bubbles/ci.yml?branch=main&logo=github)](https://github.com/lhjnano/ratatui-bubbles/actions/workflows/ci.yml)
+[![crates.io](https://img.shields.io/crates/v/ratatui-bubbles?logo=rust&label=crates.io)](https://crates.io/crates/ratatui-bubbles)
+[![docs.rs](https://img.shields.io/docsrs/ratatui-bubbles?logo=docsdotrs&label=docs.rs)](https://docs.rs/ratatui-bubbles/0.0.1-alpha)
+[![license](https://img.shields.io/crates/l/ratatui-bubbles?logo=opensourcehardware&label=license)](#license)
+
+> Bubble Tea/Bubbles-style TUI components for [Ratatui]
+
+`ratatui-bubbles` ports the component library of the Go [Bubble Tea](https://github.com/charmbracelet/bubbletea)
+ecosystem — [Bubble Tea](https://github.com/charmbracelet/bubbletea) (Elm-architecture runtime),
+[Bubbles](https://github.com/charmbracelet/bubbles) (ready-made widgets), and
+[Lipgloss](https://github.com/charmbracelet/lipgloss) (style builder) — into idiomatic Rust on top of
+the [Ratatui](https://ratatui.rs) rendering layer. If you've ever wished Ratatui shipped with the same
+rich set of batteries-included widgets that Bubble Tea gives you out of the box, this crate is for you.
+
+## Status
+
+**Early development. Phase 1 in progress.**
+
+- ✅ **Tier 1 (in progress):** `elm`, `list`, `viewport`, `text_input` — basic implementations land first
+- 🚧 **Tier 2 (stubbed):** `spinner`, `table`, `key_help`, `style` — API frozen, bodies pending
+- See [`docs/Phase-1-Plan.md`](docs/Phase-1-Plan.md) for the full migration matrix
+
+## Why
+
+The Rust TUI ecosystem has [Ratatui](https://ratatui.rs) as an excellent rendering layer, but it
+deliberately stays low-level: you get a `Frame`, a buffer, and a set of primitive widgets, and you
+build everything else yourself. The Go world, by contrast, has [Bubble Tea](https://github.com/charmbracelet/bubbletea)
+plus its companion libraries — a cohesive set of widgets, an Elm-style update loop, and a declarative
+styling DSL — that make it trivial to assemble polished terminal apps.
+
+`ratatui-bubbles` fills that gap. It brings the ergonomics of the Bubble Tea component model to
+Rust without reimplementing Ratatui's rendering engine: same mental model, same widget vocabulary,
+idiomatic Rust types and traits.
+
+## Installation
+
+```sh
+cargo add ratatui-bubbles
+```
+
+> **Note:** `ratatui-bubbles` is not yet published to crates.io. Until the first tagged release,
+> clone the repository and depend on it via a path or git dependency:
+>
+> ```toml
+> [dependencies]
+> ratatui-bubbles = { path = "../ratatui-bubbles" }
+> # or
+> ratatui-bubbles = { git = "https://github.com/lhjnano/ratatui-bubbles" }
+> ```
+
+## Usage
+
+A minimal filterable list — the `list` widget tracks items, a filter string, and a selection cursor
+that wraps within the visible (filtered) rows:
+
+```rust
+use ratatui_bubbles::list::{List, ListItem};
+
+struct Task(&'static str);
+impl ListItem for Task {
+    fn render(&self) -> ratatui::text::Line<'_> { ratatui::text::Line::from(self.0) }
+    fn filterable_text(&self) -> &str { self.0 }
+}
+
+let mut list = List::new(vec![Task("write docs"), Task("ship v0.1"), Task("profit")]);
+list.set_filter("ship");
+assert_eq!(list.filtered_len(), 1);
+```
+
+See the [module documentation](https://docs.rs/ratatui-bubbles) for each widget's full API.
+
+## Roadmap
+
+- Tier 1 full implementations (`elm`, `list`, `viewport`, `text_input`) with edge-case test coverage
+- Tier 2 implementations (`spinner`, `table`, `key_help`, `style`)
+- Real async `Command`/`Program` event loop on top of crossterm
+- More Bubbles ports: file picker, progress bar, timer (see [Phase 1 Plan](docs/Phase-1-Plan.md))
+
+## Inspiration
+
+- **[Bubble Tea](https://github.com/charmbracelet/bubbletea)** — Elm-architecture TUI runtime
+- **[Bubbles](https://github.com/charmbracelet/bubbles)** — the component library being ported
+- **[Lipgloss](https://github.com/charmbracelet/lipgloss)** — declarative terminal styling
+- **[Ratatui](https://ratatui.rs)** — the Rust rendering layer this crate builds on
+
+## License
+
+Dual-licensed under either of
+
+- [MIT License](LICENSE-MIT)
+- [Apache License, Version 2.0](LICENSE-APACHE)
+
+at your option.
+
+Unless you explicitly state otherwise, any contribution intentionally submitted for inclusion in this
+crate by you, as defined in the Apache-2.0 license, shall be dual licensed as above, without any
+additional terms or conditions.
+
+## Contributing
+
+Contributions are welcome! See [`CONTRIBUTING.md`](CONTRIBUTING.md) for development setup, code style,
+and how to add a new widget port.

@@ -1,0 +1,23 @@
+[package]
+name = "ratatui-bubbles"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+description.workspace = true
+keywords.workspace = true
+categories.workspace = true
+readme.workspace = true
+
+[dependencies]
+ratatui = { workspace = true }
+crossterm = { workspace = true }
+
+[dev-dependencies]
+tokio = { workspace = true }
+
+[[example]]
+name = "demo"
+path = "examples/demo.rs"

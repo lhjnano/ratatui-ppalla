@@ -1,0 +1,328 @@
+//! Enhanced list widget with filtering, navigation, and selection.
+//!
+//! A Rust port of the [`Bubbles` `list`](https://github.com/charmbracelet/bubbles/list)
+//! package from the Bubble Tea ecosystem. The [`List`] keeps the full item set
+//! alongside a vector of indices (`filtered_indices`) into it representing the
+//! currently-visible rows; the selection cursor moves within the filtered set.
+//!
+//! Unlike the upstream Go package (which renders itself via Lipgloss), this
+//! widget delegates the actual drawing to [`ratatui::widgets::List`] and merely
+//! tracks state: items, filter, and selection.
+
+#![allow(clippy::module_name_repetitions)]
+
+use ratatui::layout::Rect;
+use ratatui::style::{Modifier, Style};
+use ratatui::text::Line;
+use ratatui::widgets::{List as RatList, ListItem as RatListItem, ListState};
+use ratatui::Frame;
+
+/// A single row in a [`List`].
+///
+/// Implementors control both how the row is drawn (`render`) and how it
+/// participates in filtering (`filterable_text`).
+pub trait ListItem {
+    /// Render this item as a [`Line`] of styled text.
+    fn render(&self) -> Line<'_>;
+
+    /// Return the text used for filtering.
+    ///
+    /// Filtering is a case-insensitive substring match against the current
+    /// filter string (see [`List::set_filter`]).
+    fn filterable_text(&self) -> &str;
+}
+
+/// A filterable, selectable list of items.
+///
+/// Port of `bubbles/list.Model`. See the [module docs](self) for details.
+pub struct List<T: ListItem> {
+    /// Every item in the list, in insertion order.
+    items: Vec<T>,
+    /// Index into the underlying item vector of the currently-selected row, if any.
+    selected: Option<usize>,
+    /// Current filter string (empty matches everything).
+    filter: String,
+    /// Indices into `items` that currently pass the filter.
+    filtered_indices: Vec<usize>,
+}
+
+impl<T: ListItem> List<T> {
+    /// Create a new list containing `items`.
+    ///
+    /// Defaults: no selection, an empty filter, and every item visible
+    /// (all indices present in the filtered set).
+    #[must_use]
+    pub fn new(items: Vec<T>) -> Self {
+        let filtered_indices: Vec<usize> = (0..items.len()).collect();
+        Self {
+            items,
+            selected: None,
+            filter: String::new(),
+            filtered_indices,
+        }
+    }
+
+    /// Return the currently-selected item, or `None` if nothing is selected
+    /// (or the filtered set is empty).
+    #[must_use]
+    pub fn selected(&self) -> Option<&T> {
+        self.selected.and_then(|idx| self.items.get(idx))
+    }
+
+    /// Move the selection cursor down by one, wrapping within the filtered set.
+    ///
+    /// If nothing is currently selected, the first visible item becomes selected.
+    /// Does nothing when the filtered set is empty.
+    pub fn select_next(&mut self) {
+        if self.filtered_indices.is_empty() {
+            self.selected = None;
+            return;
+        }
+        let new_pos = match self.current_filtered_pos() {
+            Some(pos) => (pos + 1) % self.filtered_indices.len(),
+            None => 0,
+        };
+        self.selected = Some(self.filtered_indices[new_pos]);
+    }
+
+    /// Move the selection cursor up by one, wrapping within the filtered set.
+    ///
+    /// If nothing is selected (or the cursor sits at the top), the last visible
+    /// item becomes selected. Does nothing when the filtered set is empty.
+    pub fn select_prev(&mut self) {
+        if self.filtered_indices.is_empty() {
+            self.selected = None;
+            return;
+        }
+        let len = self.filtered_indices.len();
+        let new_pos = match self.current_filtered_pos() {
+            Some(pos) if pos > 0 => pos - 1,
+            Some(_) | None => len - 1,
+        };
+        self.selected = Some(self.filtered_indices[new_pos]);
+    }
+
+    /// Set the filter string and recompute the visible rows.
+    ///
+    /// `filter` is matched case-insensitively as a substring of each item's
+    /// [`filterable_text`](ListItem::filterable_text). An empty filter shows
+    /// every item.
+    ///
+    /// If the currently-selected item survives the filter it stays selected;
+    /// otherwise the selection moves to the first visible item (or `None`
+    /// when the filtered set becomes empty).
+    pub fn set_filter(&mut self, filter: &str) {
+        self.filter = filter.to_string();
+        self.recompute_filtered();
+        let still_visible = self
+            .selected
+            .is_some_and(|idx| self.filtered_indices.contains(&idx));
+        self.selected = if still_visible {
+            self.selected
+        } else {
+            self.filtered_indices.first().copied()
+        };
+    }
+
+    /// Return the current filter string.
+    #[must_use]
+    pub fn filter(&self) -> &str {
+        self.filter.as_str()
+    }
+
+    /// Return the total number of items (ignoring the filter).
+    #[must_use]
+    pub fn len(&self) -> usize {
+        self.items.len()
+    }
+
+    /// Return `true` if there are no items at all.
+    #[must_use]
+    pub fn is_empty(&self) -> bool {
+        self.items.is_empty()
+    }
+
+    /// Return the number of items currently passing the filter.
+    #[must_use]
+    pub fn filtered_len(&self) -> usize {
+        self.filtered_indices.len()
+    }
+
+    /// Render the visible items into `frame`, highlighting the selected row.
+    ///
+    /// The selected row is highlighted with `Style::default().add_modifier(Modifier::REVERSED)`,
+    /// applied via [`ratatui::widgets::List`] stateful highlighting.
+    pub fn render(&self, frame: &mut Frame<'_>, area: Rect) {
+        let rat_items: Vec<RatListItem<'_>> = self
+            .filtered_indices
+            .iter()
+            .filter_map(|&idx| {
+                self.items
+                    .get(idx)
+                    .map(|item| RatListItem::new(item.render()))
+            })
+            .collect();
+        let list = RatList::new(rat_items)
+            .highlight_style(Style::default().add_modifier(Modifier::REVERSED));
+        let mut state = ListState::default();
+        state.select(self.current_filtered_pos());
+        frame.render_stateful_widget(list, area, &mut state);
+    }
+
+    /// Position of the currently-selected item within `filtered_indices`, if any.
+    fn current_filtered_pos(&self) -> Option<usize> {
+        self.selected
+            .and_then(|idx| self.filtered_indices.iter().position(|&i| i == idx))
+    }
+
+    /// Recompute `filtered_indices` from `items` and the current filter.
+    fn recompute_filtered(&mut self) {
+        if self.filter.is_empty() {
+            self.filtered_indices = (0..self.items.len()).collect();
+            return;
+        }
+        let needle = self.filter.to_lowercase();
+        self.filtered_indices = self
+            .items
+            .iter()
+            .enumerate()
+            .filter(|(_, item)| {
+                item.filterable_text()
+                    .to_lowercase()
+                    .contains(needle.as_str())
+            })
+            .map(|(idx, _)| idx)
+            .collect();
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    struct Row {
+        text: String,
+    }
+
+    impl ListItem for Row {
+        fn render(&self) -> Line<'_> {
+            Line::from(self.text.as_str())
+        }
+        fn filterable_text(&self) -> &str {
+            self.text.as_str()
+        }
+    }
+
+    #[test]
+    fn filter_narrows_to_single_item() {
+        let mut list = List::new(vec![
+            Row {
+                text: "apple".into(),
+            },
+            Row {
+                text: "banana".into(),
+            },
+            Row {
+                text: "cherry".into(),
+            },
+        ]);
+        list.set_filter("ban");
+        assert_eq!(list.filtered_len(), 1);
+        assert_eq!(list.selected().map(|r| r.text.as_str()), Some("banana"));
+    }
+
+    #[test]
+    fn starts_with_no_selection_and_all_visible() {
+        let list = List::new(vec![
+            Row {
+                text: "apple".into(),
+            },
+            Row {
+                text: "banana".into(),
+            },
+        ]);
+        assert!(list.selected().is_none());
+        assert_eq!(list.len(), 2);
+        assert!(!list.is_empty());
+        assert_eq!(list.filtered_len(), 2);
+        assert_eq!(list.filter(), "");
+    }
+
+    #[test]
+    fn filter_is_case_insensitive() {
+        let mut list = List::new(vec![Row {
+            text: "Banana".into(),
+        }]);
+        list.set_filter("BAN");
+        assert_eq!(list.filtered_len(), 1);
+
+        list.set_filter("banana");
+        assert_eq!(list.filtered_len(), 1);
+    }
+
+    #[test]
+    fn navigation_wraps_within_filtered_set() {
+        let mut list = List::new(vec![
+            Row {
+                text: "apple".into(),
+            },
+            Row {
+                text: "apricot".into(),
+            },
+            Row {
+                text: "banana".into(),
+            },
+        ]);
+        list.set_filter("ap"); // [apple, apricot]
+                               // selected reset to first filtered item
+        assert_eq!(list.selected().map(|r| r.text.as_str()), Some("apple"));
+
+        list.select_next();
+        assert_eq!(list.selected().map(|r| r.text.as_str()), Some("apricot"));
+
+        // wrap from bottom to top
+        list.select_next();
+        assert_eq!(list.selected().map(|r| r.text.as_str()), Some("apple"));
+
+        // prev wraps from top to bottom
+        list.select_prev();
+        assert_eq!(list.selected().map(|r| r.text.as_str()), Some("apricot"));
+    }
+
+    #[test]
+    fn surviving_selection_is_preserved_across_filter() {
+        let mut list = List::new(vec![
+            Row {
+                text: "apple".into(),
+            },
+            Row {
+                text: "apricot".into(),
+            },
+            Row {
+                text: "banana".into(),
+            },
+        ]);
+        list.set_filter(""); // None -> first (apple)
+        assert_eq!(list.selected().map(|r| r.text.as_str()), Some("apple"));
+        list.select_next(); // apricot
+
+        // apricot survives "ap" filter -> stays selected
+        list.set_filter("ap");
+        assert_eq!(list.selected().map(|r| r.text.as_str()), Some("apricot"));
+    }
+
+    #[test]
+    fn no_match_filter_clears_selection() {
+        let mut list = List::new(vec![Row {
+            text: "apple".into(),
+        }]);
+        list.set_filter("zzz");
+        assert_eq!(list.filtered_len(), 0);
+        assert!(list.selected().is_none());
+
+        // empty filter restores everything and selects the first item
+        list.set_filter("");
+        assert_eq!(list.filtered_len(), 1);
+        assert_eq!(list.selected().map(|r| r.text.as_str()), Some("apple"));
+    }
+}
