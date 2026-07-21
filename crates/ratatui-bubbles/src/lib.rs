@@ -12,19 +12,21 @@
 //! ## Modules
 //!
 //! - [`elm`] — Elm architecture (Model/Update/View + Command/Message)
+//! - [`runtime`] — Synchronous crossterm event loop driver for Elm [`Model`](crate::elm::Model)s
 //! - [`list`] — Enhanced List widget (filter/sort/pagination)
 //! - [`viewport`] — Scrollable viewport with search
 //! - [`text_input`] — Multi-line text input with history
-//! - [`spinner`] — Spinner widget with built-in styles *(Tier 2 — stubbed)*
-//! - [`table`] — Enhanced Table widget *(Tier 2 — stubbed)*
-//! - [`key_help`] — Key binding help display *(Tier 2 — stubbed)*
-//! - [`style`] — Lipgloss-style builder API *(Tier 2 — stubbed)*
+//! - [`spinner`] — Spinner widget with built-in styles
+//! - [`table`] — Enhanced Table widget (sort/navigate/select)
+//! - [`key_help`] — Key binding help display
+//! - [`style`] — Lipgloss-style builder API
 
 #![warn(missing_docs)]
 #![warn(clippy::all, clippy::pedantic)]
 
 pub mod elm;
 pub mod list;
+pub mod runtime;
 pub mod text_input;
 pub mod viewport;
 

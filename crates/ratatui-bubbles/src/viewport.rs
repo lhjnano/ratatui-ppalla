@@ -275,4 +275,65 @@ mod tests {
         vp.scroll_up(5);
         assert_eq!(vp.offset(), 0);
     }
+
+    #[test]
+    fn empty_viewport_has_zero_lines() {
+        let vp = Viewport::new(10);
+        assert_eq!(vp.line_count(), 0);
+        assert_eq!(vp.match_count(), 0);
+        assert_eq!(vp.offset(), 0);
+    }
+
+    #[test]
+    fn scroll_up_beyond_zero_clamps() {
+        let mut vp = Viewport::new(10);
+        vp.append_line(Line::from("a"));
+        vp.append_line(Line::from("b"));
+        vp.append_line(Line::from("c"));
+        vp.scroll_up(100);
+        assert_eq!(vp.offset(), 0);
+    }
+
+    #[test]
+    fn scroll_down_beyond_end_clamps() {
+        // 3 lines, height 5 => max_offset = 3.saturating_sub(5) = 0
+        let mut vp = Viewport::new(5);
+        vp.append_line(Line::from("a"));
+        vp.append_line(Line::from("b"));
+        vp.append_line(Line::from("c"));
+        vp.scroll_down(100);
+        assert_eq!(vp.offset(), 0);
+    }
+
+    #[test]
+    fn search_with_no_matches_returns_zero() {
+        let mut vp = Viewport::new(10);
+        vp.append_line(Line::from("alpha"));
+        vp.append_line(Line::from("beta"));
+        vp.append_line(Line::from("gamma"));
+        vp.set_search(Some("foo"));
+        assert_eq!(vp.match_count(), 0);
+    }
+
+    #[test]
+    fn search_recomputes_after_append() {
+        let mut vp = Viewport::new(10);
+        vp.append_line(Line::from("foo one"));
+        vp.append_line(Line::from("no match here"));
+        vp.set_search(Some("foo"));
+        assert_eq!(vp.match_count(), 1);
+        vp.append_line(Line::from("foo two"));
+        assert_eq!(vp.match_count(), 2);
+    }
+
+    #[test]
+    fn clear_search_returns_all_lines_visible() {
+        let mut vp = vp_with_lines();
+        vp.set_search(Some("foo"));
+        assert_eq!(vp.match_count(), 2);
+        vp.set_search(None);
+        assert_eq!(vp.match_count(), 0);
+        // Search only affects highlighting; the buffer is unchanged.
+        assert_eq!(vp.line_count(), 4);
+    }
 }

@@ -438,4 +438,67 @@ mod tests {
         ti.backspace(); // delete 'x'
         assert_eq!(ti.value(), "한글");
     }
+
+    #[test]
+    fn backspace_at_start_of_first_line_is_noop() {
+        let mut ti = TextInput::new();
+        ti.backspace(); // empty buffer, cursor at (0,0) -> both branches skip
+        assert_eq!(ti.value(), "");
+        assert_eq!(ti.cursor(), (0, 0));
+    }
+
+    #[test]
+    fn insert_str_with_embedded_newlines_creates_multiple_lines() {
+        let mut ti = TextInput::new();
+        ti.insert_str("line1\nline2\nline3");
+        assert_eq!(ti.value(), "line1\nline2\nline3");
+        assert_eq!(ti.lines.len(), 3);
+        assert_eq!(ti.cursor(), (2, 5)); // end of "line3"
+    }
+
+    #[test]
+    fn move_left_at_start_of_first_line_clamps() {
+        let mut ti = TextInput::new();
+        ti.move_left(); // (0,0) -> neither branch applies
+        assert_eq!(ti.cursor(), (0, 0));
+    }
+
+    #[test]
+    fn move_right_at_end_of_input_clamps() {
+        let mut ti = TextInput::new();
+        ti.insert_str("abc");
+        // cursor at (0, 3); end of single-line buffer -> move_right is a no-op
+        ti.move_right();
+        assert_eq!(ti.cursor(), (0, 3));
+    }
+
+    #[test]
+    fn history_prev_on_empty_history_is_noop_or_safe() {
+        let mut ti = TextInput::new();
+        ti.history_prev(); // no submitted history -> early return, no panic
+        assert_eq!(ti.value(), "");
+        assert!(ti.history_cursor.is_none());
+    }
+
+    #[test]
+    fn submit_pushes_to_history_and_clears() {
+        let mut ti = TextInput::new();
+        ti.insert_str("hello");
+        assert_eq!(ti.submit(), "hello");
+        assert_eq!(ti.value(), ""); // buffer cleared by submit
+        assert_eq!(ti.cursor(), (0, 0));
+        // browsing back should restore the just-submitted value
+        ti.history_prev();
+        assert_eq!(ti.value(), "hello");
+    }
+
+    #[test]
+    fn clear_resets_to_single_empty_line() {
+        let mut ti = TextInput::new();
+        ti.insert_str("some\nmultiline\ncontent");
+        ti.clear();
+        assert_eq!(ti.value(), "");
+        assert_eq!(ti.cursor(), (0, 0));
+        assert_eq!(ti.lines.len(), 1); // single empty line, not zero lines
+    }
 }

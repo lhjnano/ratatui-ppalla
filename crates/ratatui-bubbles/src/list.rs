@@ -325,4 +325,80 @@ mod tests {
         assert_eq!(list.filtered_len(), 1);
         assert_eq!(list.selected().map(|r| r.text.as_str()), Some("apple"));
     }
+
+    #[test]
+    fn empty_list_has_no_selection() {
+        let list = List::new(Vec::<Row>::new());
+        assert!(list.selected().is_none());
+        assert_eq!(list.filtered_len(), 0);
+        assert!(list.is_empty());
+    }
+
+    #[test]
+    fn single_item_select_next_wraps_or_clamps() {
+        let mut list = List::new(vec![Row {
+            text: "only".into(),
+        }]);
+        list.select_next();
+        assert_eq!(list.selected().map(|r| r.text.as_str()), Some("only"));
+        // navigating again on a single-item set wraps/clamps back to the same item
+        list.select_next();
+        assert_eq!(list.selected().map(|r| r.text.as_str()), Some("only"));
+    }
+
+    #[test]
+    fn filter_with_no_matches_clears_filtered() {
+        let mut list = List::new(vec![
+            Row {
+                text: "apple".into(),
+            },
+            Row {
+                text: "banana".into(),
+            },
+        ]);
+        list.set_filter("zzz");
+        assert_eq!(list.filtered_len(), 0);
+        assert!(list.selected().is_none());
+    }
+
+    #[test]
+    fn unicode_filter_matches_correctly() {
+        let mut list = List::new(vec![
+            Row {
+                text: "안녕하세요".into(),
+            },
+            Row {
+                text: "hello".into(),
+            },
+        ]);
+        list.set_filter("안녕");
+        assert_eq!(list.filtered_len(), 1);
+        assert_eq!(list.selected().map(|r| r.text.as_str()), Some("안녕하세요"));
+    }
+
+    #[test]
+    fn selection_resets_when_filtered_out() {
+        let mut list = List::new(vec![
+            Row {
+                text: "apple".into(),
+            },
+            Row {
+                text: "banana".into(),
+            },
+            Row {
+                text: "cherry".into(),
+            },
+        ]);
+        // select_next from None picks the first filtered item
+        list.select_next(); // apple
+        list.select_next(); // banana
+        assert_eq!(list.selected().map(|r| r.text.as_str()), Some("banana"));
+
+        // filter that excludes "banana" (matches apple + cherry via 'e')
+        list.set_filter("e");
+        // banana is filtered out -> selection resets to first remaining item
+        let sel = list.selected().map(|r| r.text.as_str());
+        assert!(sel == Some("apple") || sel == Some("cherry"));
+        assert_ne!(sel, Some("banana"));
+    }
 }

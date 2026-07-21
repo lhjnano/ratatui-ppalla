@@ -134,4 +134,97 @@ mod tests {
         // `Tick` and the inner `None` are the two leaves.
         assert_eq!(flatten(cmd).len(), 2);
     }
+
+    #[test]
+    fn flatten_unwraps_deeply_nested_batches() {
+        // Batch(Batch(Batch([Tick]))) — three levels deep, one leaf.
+        let cmd: Command<()> = Command::Batch(vec![Command::Batch(vec![Command::Batch(vec![
+            Command::Tick,
+        ])])]);
+        let flat = flatten(cmd);
+        assert_eq!(
+            flat.len(),
+            1,
+            "deeply nested batch should flatten to 1 leaf"
+        );
+        assert!(
+            matches!(flat[0], Command::Tick),
+            "the single leaf should be Tick"
+        );
+    }
+
+    #[test]
+    fn command_none_is_none_returns_true() {
+        assert!(
+            Command::<()>::none().is_none(),
+            "Command::none() must be None"
+        );
+        assert!(
+            !Command::<()>::Tick.is_none(),
+            "Tick must not be considered None"
+        );
+    }
+
+    #[test]
+    fn command_default_is_none() {
+        // `Command` does not derive `PartialEq`, so we assert via `is_none()`
+        // (which performs the same structural match the prompt's `==` intended).
+        assert!(
+            Command::<()>::default().is_none(),
+            "Default::default() must produce Command::None"
+        );
+    }
+
+    #[test]
+    fn batch_with_empty_vec_still_a_batch() {
+        // An empty Vec must still be a Batch variant (not collapsed to None).
+        let cmd: Command<()> = Command::batch(Vec::new());
+        assert!(
+            matches!(cmd, Command::Batch(ref inner) if inner.is_empty()),
+            "Command::batch(Vec::new()) must remain Command::Batch([])"
+        );
+    }
+
+    #[test]
+    fn msg_command_carries_payload() {
+        let cmd: Command<u8> = Command::msg(42u8);
+        assert!(
+            matches!(cmd, Command::Msg(42)),
+            "Command::msg(42) must carry its payload unchanged"
+        );
+    }
+
+    #[test]
+    fn flatten_of_none_returns_single_element() {
+        // `None` is a leaf, so flatten yields a single-element Vec.
+        let flat = flatten(Command::<()>::None);
+        assert_eq!(
+            flat.len(),
+            1,
+            "flatten(None) should produce exactly one leaf"
+        );
+        assert!(matches!(flat[0], Command::None));
+    }
+
+    #[test]
+    fn flatten_of_msg_returns_single_element() {
+        let flat = flatten(Command::msg(5i32));
+        assert_eq!(
+            flat.len(),
+            1,
+            "flatten(Msg) should produce exactly one leaf"
+        );
+        assert!(matches!(flat[0], Command::Msg(5)));
+    }
+
+    #[test]
+    fn flatten_of_tick_returns_single_element() {
+        let flat = flatten(Command::<()>::Tick);
+        assert_eq!(
+            flat.len(),
+            1,
+            "flatten(Tick) should produce exactly one leaf"
+        );
+        assert!(matches!(flat[0], Command::Tick));
+    }
 }

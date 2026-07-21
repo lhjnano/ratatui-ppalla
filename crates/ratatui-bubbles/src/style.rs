@@ -1,18 +1,15 @@
 //! Lipgloss-style builder API — a port of [Lipgloss](https://github.com/charmbracelet/lipgloss) for Ratatui.
 //!
-//! # Status
-//!
-//! **Tier 2 — not yet implemented.** Construction works; chained style methods
-//! and `build()` panic with [`todo!()`].
+//! Provides a chained builder for [`ratatui::style::Style`]. Padding, margin,
+//! and border (layout concepts in Lipgloss) are accepted by the builder for
+//! API parity but are not yet applied to the produced `Style` — they would
+//! require wrapping the widget in a `Block` at render time, which is out of
+//! scope for this module.
 
-#![allow(clippy::missing_panics_doc)]
-
-use ratatui::style::Color;
+use ratatui::style::{Color, Modifier, Style};
 use ratatui::widgets::BorderType;
 
 /// A chained builder for [`ratatui::style::Style`], inspired by Lipgloss.
-///
-/// Tier 2 stub — see module docs.
 #[derive(Debug, Clone)]
 pub struct StyleBuilder {
     fg: Option<Color>,
@@ -76,21 +73,24 @@ impl StyleBuilder {
         self
     }
 
-    /// Set horizontal and vertical padding.
+    /// Set horizontal and vertical padding (stored but NOT applied to the
+    /// produced `Style`; would need a wrapping `Block` at render time).
     #[must_use]
     pub fn padding(mut self, x: u16, y: u16) -> Self {
         self.padding = Some((x, y));
         self
     }
 
-    /// Set horizontal and vertical margin.
+    /// Set horizontal and vertical margin (stored but NOT applied to the
+    /// produced `Style`; would need a wrapping `Block` at render time).
     #[must_use]
     pub fn margin(mut self, x: u16, y: u16) -> Self {
         self.margin = Some((x, y));
         self
     }
 
-    /// Set border type.
+    /// Set border type (stored but NOT applied to the produced `Style`; would
+    /// need a wrapping `Block` at render time).
     #[must_use]
     pub fn border(mut self, border: BorderType) -> Self {
         self.border = Some(border);
@@ -99,27 +99,60 @@ impl StyleBuilder {
 
     /// Build the final [`ratatui::style::Style`].
     ///
-    /// # Panics
-    ///
-    /// Tier 2 — not implemented yet.
+    /// Note: `padding`, `margin`, and `border` are intentionally ignored —
+    /// see the module docs.
     #[must_use]
-    pub fn build(self) -> ratatui::style::Style {
-        let _ = (
-            self.fg,
-            self.bg,
-            self.bold,
-            self.italic,
-            self.underline,
-            self.padding,
-            self.margin,
-            self.border,
-        );
-        todo!("Tier 2: StyleBuilder::build")
+    pub fn build(self) -> Style {
+        let mut style = Style::default();
+        if let Some(fg) = self.fg {
+            style = style.fg(fg);
+        }
+        if let Some(bg) = self.bg {
+            style = style.bg(bg);
+        }
+        let mut modifier = Modifier::empty();
+        if self.bold {
+            modifier |= Modifier::BOLD;
+        }
+        if self.italic {
+            modifier |= Modifier::ITALIC;
+        }
+        if self.underline {
+            modifier |= Modifier::UNDERLINED;
+        }
+        if !modifier.is_empty() {
+            style = style.add_modifier(modifier);
+        }
+        style
     }
 }
 
 impl Default for StyleBuilder {
     fn default() -> Self {
         Self::new()
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn empty_builder_produces_default_style() {
+        let s = StyleBuilder::new().build();
+        assert_eq!(s, Style::default());
+    }
+
+    #[test]
+    fn foreground_sets_fg() {
+        let s = StyleBuilder::new().foreground(Color::Red).build();
+        assert_eq!(s.fg, Some(Color::Red));
+    }
+
+    #[test]
+    fn bold_and_italic_compose_into_modifier() {
+        let s = StyleBuilder::new().bold().italic().build();
+        assert!(s.add_modifier.contains(Modifier::BOLD));
+        assert!(s.add_modifier.contains(Modifier::ITALIC));
     }
 }
