@@ -22,6 +22,13 @@ rich set of batteries-included widgets that Bubble Tea gives you out of the box,
 - 🚧 **Tier 2 (stubbed):** `spinner`, `table`, `key_help`, `style` — API frozen, bodies pending
 - See [`docs/ROADMAP.md`](docs/ROADMAP.md) for the full migration matrix
 
+## Test Coverage
+
+**98 tests · 9 suites · 98% public-API coverage** (97 of 99 items).
+
+- 📊 **[Interactive heatmap](docs/test-coverage-heatmap/index.html)** — open locally for hover tooltips, color-coded intensity, gap analysis.
+- 📝 **[Text matrix](docs/TEST-COVERAGE.md)** — same data, markdown form (GitHub-renders inline, diffs cleanly).
+
 ## Why
 
 The Rust TUI ecosystem has [Ratatui](https://ratatui.rs) as an excellent rendering layer, but it
