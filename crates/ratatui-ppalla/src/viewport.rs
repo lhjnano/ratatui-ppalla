@@ -3,6 +3,13 @@
 //! A Rust port of the [`Bubbles` `viewport`](https://github.com/charmbracelet/bubbles/viewport)
 //! package: a vertically-scrollable buffer of [`ratatui::text::Line`]s with
 //! case-insensitive substring search and match navigation.
+//!
+//! The [`Viewport`] holds the full line buffer and a scroll offset, and
+//! supports incremental appends ([`Viewport::append_line`]), scrolling
+//! ([`Viewport::scroll_down`] / [`Viewport::scroll_up`]), and search
+//! ([`Viewport::set_search`]) with next/previous match navigation
+//! ([`Viewport::next_match`] / [`Viewport::prev_match`]). It delegates the
+//! actual drawing to ratatui's [`Paragraph`](ratatui::widgets::Paragraph).
 
 #![allow(clippy::module_name_repetitions)]
 

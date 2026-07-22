@@ -74,6 +74,65 @@ pub struct TextLayout {
     pub total_lines: usize,
 }
 
+impl TextLayout {
+    /// Paint the visible display lines into `buf` within `area`, advancing by
+    /// each segment's cached Unicode width. Width-2 graphemes (CJK, emoji)
+    /// occupy two cells and clear their continuation column. Cells outside the
+    /// painted segments are left untouched — pre-fill `buf` with spaces if you
+    /// need blank padding.
+    ///
+    /// This is the render bridge that turns a [`TextLayout`] (the pure-data
+    /// result of [`PreparedText::layout`]) into visible cells, so callers do
+    /// not have to write their own grapheme-walking loop.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use ratatui::buffer::Buffer;
+    /// use ratatui::layout::Rect;
+    /// use ratatui_ppalla::prepared::{LayoutCtx, Preparable, PreparedText};
+    ///
+    /// let prepared = PreparedText::prepare_str("hi");
+    /// let layout = PreparedText::layout(&prepared, LayoutCtx::new(10, 1));
+    /// let mut buf = Buffer::empty(Rect::new(0, 0, 10, 1));
+    /// layout.paint(&mut buf, Rect::new(0, 0, 10, 1));
+    /// assert_eq!(buf[(0, 0)].symbol(), "h");
+    /// ```
+    pub fn paint(&self, buf: &mut ratatui::buffer::Buffer, area: ratatui::layout::Rect) {
+        for (row_idx, display_line) in self.lines.iter().enumerate() {
+            let Ok(row) = u16::try_from(row_idx) else {
+                break;
+            };
+            let Some(y) = area.y.checked_add(row) else {
+                break;
+            };
+            if y >= area.bottom() {
+                break;
+            }
+            let mut x = area.x;
+            for seg in &display_line.segments {
+                let w = seg.width;
+                if w == 0 {
+                    continue;
+                }
+                let Some(next) = x.checked_add(w) else {
+                    break;
+                };
+                if next > area.right() {
+                    break;
+                }
+                buf[(x, y)].set_symbol(&seg.grapheme);
+                // A width-2 grapheme occupies two cells; blank the continuation
+                // column so the wide character reads back correctly.
+                if w == 2 {
+                    buf[(x + 1, y)].set_symbol("");
+                }
+                x = next;
+            }
+        }
+    }
+}
+
 impl PreparedTextState {
     /// Number of logical lines.
     #[must_use]
