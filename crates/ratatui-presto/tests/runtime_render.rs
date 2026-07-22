@@ -1,4 +1,4 @@
-//! End-to-end test for [`ratatui_bubbles::runtime::main_loop`] using an
+//! End-to-end test for [`ratatui_presto::runtime::main_loop`] using an
 //! injected [`TestBackend`] and a scripted [`EventSource`].
 //!
 //! Exercises the runtime's full message-drain -> render -> event-poll loop
@@ -12,9 +12,9 @@ use ratatui::buffer::Buffer;
 use ratatui::layout::Rect;
 use ratatui::widgets::{Block, Borders, Paragraph};
 use ratatui::{Frame, Terminal};
-use ratatui_bubbles::elm::{Command, Model};
-use ratatui_bubbles::runtime::{main_loop, App};
-use ratatui_bubbles::test_utils::ScriptedEventSource;
+use ratatui_presto::elm::{Command, Model};
+use ratatui_presto::runtime::{main_loop, App};
+use ratatui_presto::test_utils::ScriptedEventSource;
 
 // ============================================================
 // Counter App -- copied from examples/demo.rs (private there),

@@ -1,24 +1,24 @@
 //! Widget specifications and factories for `tui-inject`.
 //!
-//! Each variant of [`WidgetSpec`] corresponds to a ratatui-bubbles widget
+//! Each variant of [`WidgetSpec`] corresponds to a ratatui-presto widget
 //! configured with simple primitive parameters (strings, ints). The
 //! [`WidgetSpec::render`] method draws the widget into a ratatui `Frame`.
 
 use ratatui::layout::Rect;
 use ratatui::text::Line;
 use ratatui::Frame;
-use ratatui_bubbles::key_help::{KeyBinding, KeyHelp};
-use ratatui_bubbles::list::{List, ListItem};
-use ratatui_bubbles::spinner::{Spinner, SpinnerStyle};
-use ratatui_bubbles::style::StyleBuilder;
-use ratatui_bubbles::table::{Column, Row, Table};
-use ratatui_bubbles::text_input::TextInput;
-use ratatui_bubbles::viewport::Viewport;
+use ratatui_presto::key_help::{KeyBinding, KeyHelp};
+use ratatui_presto::list::{List, ListItem};
+use ratatui_presto::spinner::{Spinner, SpinnerStyle};
+use ratatui_presto::style::StyleBuilder;
+use ratatui_presto::table::{Column, Row, Table};
+use ratatui_presto::text_input::TextInput;
+use ratatui_presto::viewport::Viewport;
 
 /// A configured widget ready to render.
 ///
 /// Each variant carries the minimum primitive state needed to construct
-/// the underlying ratatui-bubbles widget. Use [`WidgetSpec::render`] to
+/// the underlying ratatui-presto widget. Use [`WidgetSpec::render`] to
 /// draw it into a `Frame`.
 #[derive(Debug, Clone)]
 pub enum WidgetSpec {

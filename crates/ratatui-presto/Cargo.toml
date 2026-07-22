@@ -1,5 +1,5 @@
 [package]
-name = "ratatui-bubbles"
+name = "ratatui-presto"
 version.workspace = true
 edition.workspace = true
 authors.workspace = true
@@ -19,6 +19,7 @@ crossterm = { workspace = true }
 tokio = { workspace = true }
 insta = { workspace = true }
 pretty_assertions = { workspace = true }
+proptest = { workspace = true }
 
 [[example]]
 name = "demo"

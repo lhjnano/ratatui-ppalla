@@ -1,4 +1,4 @@
-//! Integration tests for [`ratatui_bubbles::viewport::Viewport`] rendering.
+//! Integration tests for [`ratatui_presto::viewport::Viewport`] rendering.
 //!
 //! Uses ratatui's [`TestBackend`](ratatui::backend::TestBackend) to render the
 //! viewport into an in-memory buffer and assert on the visible content.
@@ -9,7 +9,7 @@ use ratatui::buffer::Buffer;
 use ratatui::layout::Rect;
 use ratatui::text::Line;
 use ratatui::{Frame, Terminal};
-use ratatui_bubbles::viewport::Viewport;
+use ratatui_presto::viewport::Viewport;
 
 /// Render `viewport` into a fresh `width`x`height` TestBackend buffer.
 fn render_buffer(viewport: &Viewport, width: u16, height: u16) -> Buffer {

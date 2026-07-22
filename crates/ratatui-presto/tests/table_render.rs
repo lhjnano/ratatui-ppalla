@@ -1,4 +1,4 @@
-//! Integration tests for [`ratatui_bubbles::table::Table`] rendering.
+//! Integration tests for [`ratatui_presto::table::Table`] rendering.
 //!
 //! Uses ratatui's [`TestBackend`] to render the widget into an in-memory buffer
 //! and assert on the visible cell content.
@@ -8,7 +8,7 @@ use ratatui::buffer::Buffer;
 use ratatui::layout::Rect;
 use ratatui::Frame;
 use ratatui::Terminal;
-use ratatui_bubbles::table::{Column, Row, Table};
+use ratatui_presto::table::{Column, Row, Table};
 
 #[derive(Debug, Clone)]
 struct Person {

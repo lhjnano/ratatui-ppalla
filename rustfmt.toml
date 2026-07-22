@@ -1,4 +1,4 @@
-# Rust formatting configuration for ratatui-bubbles
+# Rust formatting configuration for ratatui-presto
 # https://rust-lang.github.io/rustfmt/
 
 edition = "2021"

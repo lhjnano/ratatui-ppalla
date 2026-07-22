@@ -1,4 +1,4 @@
-//! # ratatui-bubbles
+//! # ratatui-presto
 //!
 //! Bubble Tea/Bubbles-style TUI components for Ratatui.
 //!

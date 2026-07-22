@@ -96,7 +96,7 @@ pub trait Program: Sized {
 /// # Examples
 ///
 /// ```
-/// # use ratatui_bubbles::elm::{flatten, Command};
+/// # use ratatui_presto::elm::{flatten, Command};
 /// let cmd: Command<()> = Command::Batch(vec![
 ///     Command::Tick,
 ///     Command::Batch(vec![Command::None]),

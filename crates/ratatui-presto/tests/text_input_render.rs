@@ -1,11 +1,11 @@
-//! Integration tests for [`ratatui_bubbles::text_input::TextInput`] rendering.
+//! Integration tests for [`ratatui_presto::text_input::TextInput`] rendering.
 
 use pretty_assertions::assert_eq;
 use ratatui::backend::TestBackend;
 use ratatui::buffer::{Buffer, Cell};
 use ratatui::layout::{Position, Rect};
 use ratatui::{Frame, Terminal};
-use ratatui_bubbles::text_input::TextInput;
+use ratatui_presto::text_input::TextInput;
 
 fn render_input(ti: &TextInput, width: u16, height: u16) -> Buffer {
     let backend = TestBackend::new(width, height);

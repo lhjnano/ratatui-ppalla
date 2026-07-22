@@ -1,25 +1,28 @@
-# ratatui-bubbles
+# ratatui-presto
 
-[![CI](https://img.shields.io/github/actions/workflow/status/lhjnano/ratatui-bubbles/ci.yml?branch=main&logo=github)](https://github.com/lhjnano/ratatui-bubbles/actions/workflows/ci.yml)
-[![crates.io](https://img.shields.io/crates/v/ratatui-bubbles?logo=rust&label=crates.io)](https://crates.io/crates/ratatui-bubbles)
-[![docs.rs](https://img.shields.io/docsrs/ratatui-bubbles?logo=docsdotrs&label=docs.rs)](https://docs.rs/ratatui-bubbles/0.0.1-alpha)
-[![license](https://img.shields.io/crates/l/ratatui-bubbles?logo=opensourcehardware&label=license)](#license)
+[![CI](https://img.shields.io/github/actions/workflow/status/lhjnano/ratatui-presto/ci.yml?branch=main&logo=github)](https://github.com/lhjnano/ratatui-presto/actions/workflows/ci.yml)
+[![crates.io](https://img.shields.io/crates/v/ratatui-presto?logo=rust&label=crates.io)](https://crates.io/crates/ratatui-presto)
+[![docs.rs](https://img.shields.io/docsrs/ratatui-presto?logo=docsdotrs&label=docs.rs)](https://docs.rs/ratatui-presto/0.0.1-alpha)
+[![license](https://img.shields.io/crates/l/ratatui-presto?logo=opensourcehardware&label=license)](#license)
 
-> Bubble Tea/Bubbles-style TUI components for [Ratatui]
+> High-performance TUI primitives for [Ratatui] — Pretext-inspired prepare/layout pattern
 
-`ratatui-bubbles` ports the component library of the Go [Bubble Tea](https://github.com/charmbracelet/bubbletea)
-ecosystem — [Bubble Tea](https://github.com/charmbracelet/bubbletea) (Elm-architecture runtime),
-[Bubbles](https://github.com/charmbracelet/bubbles) (ready-made widgets), and
-[Lipgloss](https://github.com/charmbracelet/lipgloss) (style builder) — into idiomatic Rust on top of
-the [Ratatui](https://ratatui.rs) rendering layer. If you've ever wished Ratatui shipped with the same
-rich set of batteries-included widgets that Bubble Tea gives you out of the box, this crate is for you.
+`ratatui-presto` brings the ergonomics of the Bubble Tea component model to
+Rust, with a focus on performance for high-frequency multi-pane TUI applications.
+It combines [Bubble Tea](https://github.com/charmbracelet/bubbletea)-style Elm architecture,
+[Bubbles](https://github.com/charmbracelet/bubbles)-style widgets, and a
+[Lipgloss](https://github.com/charmbracelet/lipgloss)-inspired style builder — into idiomatic Rust on top of
+the [Ratatui](https://ratatui.rs) rendering layer.
 
 ## Status
 
-**Early development. Phase 1 in progress.**
+**v0.0.1 — all Tier 1 + Tier 2 modules implemented, runtime + test tool included.**
 
-- ✅ **Tier 1 (in progress):** `elm`, `list`, `viewport`, `text_input` — basic implementations land first
-- 🚧 **Tier 2 (stubbed):** `spinner`, `table`, `key_help`, `style` — API frozen, bodies pending
+- ✅ **Tier 1:** `elm`, `list`, `viewport`, `text_input` — full implementations with edge-case tests
+- ✅ **Tier 2:** `spinner`, `table`, `key_help`, `style` — full implementations
+- ✅ **Runtime:** synchronous crossterm event loop with injectable backend (testable via TestBackend)
+- ✅ **Test tool:** `tui-inject` CLI (list, render, snapshot, replay, record, fuzz, bench)
+- 🚧 **Next:** Pretext-pattern `Preparable` primitives for high-frequency rendering
 - See [`docs/ROADMAP.md`](docs/ROADMAP.md) for the full migration matrix
 
 ## Test Coverage
@@ -52,24 +55,24 @@ build everything else yourself. The Go world, by contrast, has [Bubble Tea](http
 plus its companion libraries — a cohesive set of widgets, an Elm-style update loop, and a declarative
 styling DSL — that make it trivial to assemble polished terminal apps.
 
-`ratatui-bubbles` fills that gap. It brings the ergonomics of the Bubble Tea component model to
+`ratatui-presto` fills that gap. It brings the ergonomics of the Bubble Tea component model to
 Rust without reimplementing Ratatui's rendering engine: same mental model, same widget vocabulary,
 idiomatic Rust types and traits.
 
 ## Installation
 
 ```sh
-cargo add ratatui-bubbles
+cargo add ratatui-presto
 ```
 
-> **Note:** `ratatui-bubbles` is not yet published to crates.io. Until the first tagged release,
+> **Note:** `ratatui-presto` is not yet published to crates.io. Until the first tagged release,
 > clone the repository and depend on it via a path or git dependency:
 >
 > ```toml
 > [dependencies]
-> ratatui-bubbles = { path = "../ratatui-bubbles" }
+> ratatui-presto = { path = "../ratatui-presto" }
 > # or
-> ratatui-bubbles = { git = "https://github.com/lhjnano/ratatui-bubbles" }
+> ratatui-presto = { git = "https://github.com/lhjnano/ratatui-presto" }
 > ```
 
 ## Usage
@@ -91,7 +94,7 @@ list.set_filter("ship");
 assert_eq!(list.filtered_len(), 1);
 ```
 
-See the [module documentation](https://docs.rs/ratatui-bubbles) for each widget's full API.
+See the [module documentation](https://docs.rs/ratatui-presto) for each widget's full API.
 
 ## Roadmap
 

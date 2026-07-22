@@ -1,4 +1,4 @@
-# cargo-tarpaulin config — generates line-coverage report for ratatui-bubbles.
+# cargo-tarpaulin config — generates line-coverage report for ratatui-presto.
 # Run: `cargo tarpaulin --config .tarpaulin.toml`
 # Report: docs/coverage/index.html
 

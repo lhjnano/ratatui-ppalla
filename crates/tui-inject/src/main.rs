@@ -1,7 +1,7 @@
-//! tui-inject — CLI tool for testing ratatui-bubbles widgets.
+//! tui-inject — CLI tool for testing ratatui-presto widgets.
 //!
 //! Inspect, render, snapshot, replay, record, fuzz, and benchmark any
-//! ratatui-bubbles widget without touching a real terminal.
+//! ratatui-presto widget without touching a real terminal.
 //!
 //! Run `tui-inject --help` for the list of commands.
 

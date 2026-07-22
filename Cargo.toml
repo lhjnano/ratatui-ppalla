@@ -1,16 +1,16 @@
 [workspace]
 resolver = "2"
-members = ["crates/ratatui-bubbles", "crates/tui-inject"]
+members = ["crates/ratatui-presto", "crates/tui-inject"]
 
 [workspace.package]
 version = "0.0.1"
 edition = "2021"
 authors = ["HeonJe LEE <lhjnano@gmail.com>"]
 license = "MIT OR Apache-2.0"
-repository = "https://github.com/lhjnano/ratatui-bubbles"
-homepage = "https://github.com/lhjnano/ratatui-bubbles"
-description = "Bubble Tea/Bubbles-style TUI components for Ratatui"
-keywords = ["tui", "terminal", "ratatui", "bubbles", "cli"]
+repository = "https://github.com/lhjnano/ratatui-presto"
+homepage = "https://github.com/lhjnano/ratatui-presto"
+description = "High-performance TUI primitives for Ratatui — Pretext-inspired prepare/layout pattern"
+keywords = ["tui", "terminal", "ratatui", "performance", "presto"]
 categories = ["command-line-interface", "command-line-utilities"]
 readme = "README.md"
 
@@ -22,3 +22,4 @@ insta = "1"
 pretty_assertions = "1"
 clap = { version = "4", features = ["derive"] }
 serde = { version = "1", features = ["derive"] }
+proptest = "1"

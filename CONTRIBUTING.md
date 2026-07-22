@@ -1,6 +1,6 @@
-# Contributing to ratatui-bubbles
+# Contributing to ratatui-presto
 
-Thanks for your interest in `ratatui-bubbles`! This crate is an early-stage port of the
+Thanks for your interest in `ratatui-presto`! This crate is an early-stage port of the
 [Bubble Tea](https://github.com/charmbracelet/bubbletea) / [Bubbles](https://github.com/charmbracelet/bubbles)
 component library to [Ratatui](https://ratatui.rs), and there is plenty of room to help — new widget
 ports, better docs, edge-case tests, and the eventual async `Command`/`Program` loop all need hands.
@@ -12,13 +12,13 @@ This document explains how to get a local build running and how to contribute a 
 You'll need a recent stable Rust toolchain (the workspace currently targets edition 2021).
 
 ```sh
-git clone https://github.com/lhjnano/ratatui-bubbles
-cd ratatui-bubbles
+git clone https://github.com/lhjnano/ratatui-presto
+cd ratatui-presto
 cargo build
 cargo test
 ```
 
-The workspace contains a single member crate at `crates/ratatui-bubbles`. There is a placeholder
+The workspace contains a single member crate at `crates/ratatui-presto`. There is a placeholder
 example at the workspace root in `examples/demo.rs` — it will not be fully wired up until the async
 runtime lands.
 
@@ -47,11 +47,11 @@ deliberately incremental so that the public API can be reviewed before any behav
    [`bubbles/spinner`](https://github.com/charmbracelet/bubbles/tree/master/spinner)) and understand
    its public API surface, state, and update messages. Note where Lipgloss rendering happens — in
    this crate we delegate drawing to Ratatui primitives instead.
-2. **Freeze the public API.** Add the module under `crates/ratatui-bubbles/src/<name>.rs`, declare it
+2. **Freeze the public API.** Add the module under `crates/ratatui-presto/src/<name>.rs`, declare it
    in `src/lib.rs`, and write out the public types, traits, and method signatures. Bodies can be
    `todo!()` at this stage. The point is to agree on the shape before writing logic.
 3. **Stub with `todo!()`.** Each unimplemented method returns `todo!()`. This keeps the crate
-   compiling (with `cargo build -p ratatui-bubbles`) while signaling that work remains. Tier 2
+   compiling (with `cargo build -p ratatui-presto`) while signaling that work remains. Tier 2
    modules (`spinner`, `table`, `key_help`, `style`) are currently in this state.
 4. **Implement with tests.** Replace `todo!()` bodies one method at a time, adding a unit test per
    behavior in the module's `#[cfg(test)] mod tests`. Filter/navigation/wrap logic especially
@@ -68,7 +68,7 @@ calls this out as an explicit non-goal.
 - Integration tests that drive a real terminal session belong in `tests/` at the workspace root, but
   those are blocked on the async `Command`/`Program` loop landing first.
 - Run the whole suite with `cargo test`, or a single module with
-  `cargo test -p ratatui-bubbles --lib list`.
+  `cargo test -p ratatui-presto --lib list`.
 
 ## Commit style
 

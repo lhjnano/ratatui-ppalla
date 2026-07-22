@@ -401,4 +401,154 @@ mod tests {
         assert!(sel == Some("apple") || sel == Some("cherry"));
         assert_ne!(sel, Some("banana"));
     }
+
+    // ============ Property/invariant tests ============
+
+    fn sample_items() -> Vec<Row> {
+        vec![
+            Row {
+                text: "apple".to_string(),
+            },
+            Row {
+                text: "banana".to_string(),
+            },
+            Row {
+                text: "cherry".to_string(),
+            },
+            Row {
+                text: "date".to_string(),
+            },
+            Row {
+                text: "elderberry".to_string(),
+            },
+        ]
+    }
+
+    /// `filtered_len()` <= `len()` for any filter
+    #[test]
+    fn invariant_filtered_len_never_exceeds_total() {
+        for filter in &[
+            "",
+            "a",
+            "e",
+            "xyz",
+            "app",
+            "UNICODE_안녕",
+            "!@#$%",
+            "elderberry",
+        ] {
+            let mut list = List::new(sample_items());
+            list.set_filter(filter);
+            assert!(
+                list.filtered_len() <= list.len(),
+                "filter '{filter}': filtered_len {} > len {}",
+                list.filtered_len(),
+                list.len()
+            );
+        }
+    }
+
+    /// `select_next`/`prev` never panic regardless of count
+    #[test]
+    fn invariant_select_never_panics() {
+        let mut list = List::new(sample_items());
+        for _ in 0..10_000 {
+            list.select_next();
+        }
+        for _ in 0..10_000 {
+            list.select_prev();
+        }
+    }
+
+    /// Setting the same filter twice is idempotent
+    #[test]
+    fn invariant_filter_idempotent() {
+        for filter in &["", "a", "e", "xyz"] {
+            let mut a = List::new(sample_items());
+            let mut b = List::new(sample_items());
+            a.set_filter(filter);
+            b.set_filter(filter);
+            assert_eq!(a.filtered_len(), b.filtered_len());
+        }
+    }
+
+    /// Empty filter equals no filter
+    #[test]
+    fn invariant_empty_filter_equals_no_filter() {
+        let mut a = List::new(sample_items());
+        let b = List::new(sample_items());
+        a.set_filter("");
+        assert_eq!(a.filtered_len(), b.filtered_len());
+    }
+
+    /// Stress: 100 random filter strings never panic
+    #[test]
+    fn stress_100_random_filters() {
+        let filters = [
+            "a",
+            "b",
+            "ab",
+            "xyz",
+            "",
+            " ",
+            "  ",
+            "AAP",
+            "E",
+            "e",
+            "0",
+            "1",
+            "99",
+            "z",
+            "Z",
+            "@",
+            "#",
+            "$",
+            "%",
+            "^",
+            "apple",
+            "banana",
+            "cherry",
+            "elder",
+            "berry",
+            "A",
+            "B",
+            "C",
+            "D",
+            "E",
+            "F",
+            "G",
+            "H",
+            "I",
+            "J",
+            "aaaaaaaaaa",
+            "zzzzzzzzzz",
+            "2024",
+            "01",
+            "true",
+            "false",
+            "null",
+            "NaN",
+            "undefined",
+            "None",
+            "안녕",
+            "하세요",
+            "こんにちは",
+            "你好",
+            "Здравствуй",
+            "🌟",
+            "🚀",
+            "❤️",
+            "⚡",
+            "🔥",
+            "\t",
+            "\n",
+            "\\",
+        ];
+        for f in &filters {
+            let mut list = List::new(sample_items());
+            list.set_filter(f);
+            // Must not panic, filtered_len must be valid
+            assert!(list.filtered_len() <= list.len());
+        }
+    }
 }

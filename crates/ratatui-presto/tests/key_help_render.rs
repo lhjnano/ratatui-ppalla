@@ -1,4 +1,4 @@
-//! Integration tests for [`ratatui_bubbles::key_help::KeyHelp`] rendering.
+//! Integration tests for [`ratatui_presto::key_help::KeyHelp`] rendering.
 //!
 //! Uses ratatui's [`TestBackend`] to render the widget into an in-memory buffer
 //! and assert on the visible cell content.
@@ -7,7 +7,7 @@ use ratatui::backend::TestBackend;
 use ratatui::buffer::Buffer;
 use ratatui::layout::Rect;
 use ratatui::{Frame, Terminal};
-use ratatui_bubbles::key_help::{KeyBinding, KeyHelp};
+use ratatui_presto::key_help::{KeyBinding, KeyHelp};
 
 fn render_buffer(help: &KeyHelp, width: u16, height: u16) -> Buffer {
     let backend = TestBackend::new(width, height);

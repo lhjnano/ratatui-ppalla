@@ -272,9 +272,9 @@ impl Scenario {
     pub fn run(&self) -> Result<String, String> {
         use ratatui::backend::TestBackend;
         use ratatui::Terminal;
-        use ratatui_bubbles::elm::{Command, Model};
-        use ratatui_bubbles::runtime::{main_loop, App};
-        use ratatui_bubbles::test_utils::ScriptedEventSource;
+        use ratatui_presto::elm::{Command, Model};
+        use ratatui_presto::runtime::{main_loop, App};
+        use ratatui_presto::test_utils::ScriptedEventSource;
 
         let target = resolve_widget(&self.widget)?;
 
