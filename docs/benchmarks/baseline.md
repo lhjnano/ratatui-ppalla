@@ -61,6 +61,22 @@ brought the flagship text layout from 5.7× over target to 2.6× under target �
 single localized change (no trait change) that defers grapheme `String` cloning
 to the visible window only.
 
+### Paint bridge + multi-pane scenario (post-M12)
+
+The `TextLayout::paint` render bridge (turning the pure-data layout result into
+visible cells) and a 20-pane Orca-TUI scenario (N=20 agents @ 60fps):
+
+| Benchmark | Mean time | vs 60fps budget (16.67ms) |
+|-----------|-----------|---------------------------|
+| `paint_text/80x24` (single pane paint) | **23.2 µs** | 0.14% |
+| `layout_paint_20panes/80x24` (20 panes, each layout+paint) | **6.65 ms** | 39.9% |
+
+The paint bridge itself is cheap (23 µs — 17% of the layout cost). The real
+multi-agent cost is dominated by `layout` (134 µs/pane × 20 = 2.7 ms) plus paint
+(23 µs/pane × 20 = 0.5 ms) plus per-frame `Buffer` allocation, totaling 6.65 ms.
+This leaves ~10 ms of the 60fps budget for the AgentBus drain, terminal I/O, and
+safety margin — i.e. the ppalla layer alone keeps N=20 panes within frame budget.
+
 ## Analysis
 
 ### ✅ Win: PreparedLayout cache hit (64.7 ns vs 10 000 ns target)

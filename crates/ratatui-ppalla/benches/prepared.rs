@@ -320,9 +320,58 @@ fn bench_layout_buffer(c: &mut Criterion) {
     group.finish();
 }
 
+// ===== Paint bridge (render hot path) =====
+
+/// Measure `TextLayout::paint`: writing the visible display lines into a
+/// ratatui Buffer. The layout is computed once outside the timed loop; the
+/// timed region measures only the cell-writing bridge.
+fn bench_paint_text(c: &mut Criterion) {
+    let input = make_lines(1000, 80);
+    let prepared = PreparedText::prepare_str(&input);
+    let layout = PreparedText::layout(&prepared, LayoutCtx::new(80, 24));
+    let area = ratatui::layout::Rect::new(0, 0, 80, 24);
+    c.bench_function("paint_text/80x24", |b| {
+        b.iter_batched(
+            || ratatui::buffer::Buffer::empty(area),
+            |mut buf| {
+                layout.paint(&mut buf, area);
+                black_box(buf);
+            },
+            BatchSize::SmallInput,
+        );
+    });
+}
+
+/// Orca-TUI scenario: 20 independent panes, each laid out + painted per frame.
+/// This is the real-world hot path for a multi-agent TUI (N=20 @ 60fps).
+/// Measures the combined layout + paint cost for all 20 panes against the
+/// 16.67ms 60fps frame budget.
+fn bench_layout_paint_20panes(c: &mut Criterion) {
+    let panes: Vec<_> = (0..20)
+        .map(|_| PreparedText::prepare_str(&make_lines(1000, 80)))
+        .collect();
+    let ctx = LayoutCtx::new(80, 24);
+    let area = ratatui::layout::Rect::new(0, 0, 80, 24);
+    c.bench_function("layout_paint_20panes/80x24", |b| {
+        b.iter_batched(
+            || ratatui::buffer::Buffer::empty(area),
+            |mut buf| {
+                for prepared in &panes {
+                    let layout = PreparedText::layout(prepared, ctx);
+                    layout.paint(&mut buf, area);
+                }
+                black_box(buf);
+            },
+            BatchSize::SmallInput,
+        );
+    });
+}
+
 criterion_group!(
     benches,
     bench_prepare_text,
+    bench_paint_text,
+    bench_layout_paint_20panes,
     bench_layout_text,
     bench_layout_cache,
     bench_comparison,
