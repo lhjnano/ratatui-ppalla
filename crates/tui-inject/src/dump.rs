@@ -185,4 +185,139 @@ mod tests {
         assert!(css.contains("color: #ff5555"));
         assert!(css.contains("background-color: #bd93f9"));
     }
+
+    // ----- Color variants -----
+
+    #[test]
+    fn color_to_css_reset_returns_none() {
+        assert!(color_to_css(Color::Reset).is_none());
+    }
+
+    #[test]
+    fn color_to_css_named_variants() {
+        assert_eq!(color_to_css(Color::Black).unwrap(), "#000000");
+        assert_eq!(color_to_css(Color::Red).unwrap(), "#ff5555");
+        assert_eq!(color_to_css(Color::Green).unwrap(), "#50fa7b");
+        assert_eq!(color_to_css(Color::Yellow).unwrap(), "#f1fa8c");
+        assert_eq!(color_to_css(Color::Blue).unwrap(), "#bd93f9");
+        assert_eq!(color_to_css(Color::Magenta).unwrap(), "#ff79c6");
+        assert_eq!(color_to_css(Color::Cyan).unwrap(), "#8be9fd");
+        assert_eq!(color_to_css(Color::Gray).unwrap(), "#bbbbbb");
+        assert_eq!(color_to_css(Color::DarkGray).unwrap(), "#555555");
+        assert_eq!(color_to_css(Color::LightRed).unwrap(), "#ff7777");
+        assert_eq!(color_to_css(Color::LightGreen).unwrap(), "#88ff99");
+        assert_eq!(color_to_css(Color::LightYellow).unwrap(), "#ffffaa");
+        assert_eq!(color_to_css(Color::LightBlue).unwrap(), "#ccbbff");
+        assert_eq!(color_to_css(Color::LightMagenta).unwrap(), "#ffaadd");
+        assert_eq!(color_to_css(Color::LightCyan).unwrap(), "#aaeeff");
+        assert_eq!(color_to_css(Color::White).unwrap(), "#ffffff");
+    }
+
+    #[test]
+    fn color_to_css_rgb_formats_as_hex() {
+        let css = color_to_css(Color::Rgb(0x12, 0x34, 0x56)).unwrap();
+        assert_eq!(css, "#123456");
+    }
+
+    #[test]
+    fn color_to_css_indexed_returns_grayscale() {
+        let css = color_to_css(Color::Indexed(128)).unwrap();
+        assert_eq!(css, "rgb(128, 128, 128)");
+    }
+
+    // ----- Modifier flags -----
+
+    #[test]
+    fn style_to_css_bold_modifier() {
+        let style = ratatui::style::Style::default().add_modifier(Modifier::BOLD);
+        let css = style_to_css(&style);
+        assert!(css.contains("font-weight: bold"));
+    }
+
+    #[test]
+    fn style_to_css_italic_modifier() {
+        let style = ratatui::style::Style::default().add_modifier(Modifier::ITALIC);
+        let css = style_to_css(&style);
+        assert!(css.contains("font-style: italic"));
+    }
+
+    #[test]
+    fn style_to_css_underlined_modifier() {
+        let style = ratatui::style::Style::default().add_modifier(Modifier::UNDERLINED);
+        let css = style_to_css(&style);
+        assert!(css.contains("text-decoration: underline"));
+    }
+
+    #[test]
+    fn style_to_css_reversed_modifier() {
+        let style = ratatui::style::Style::default().add_modifier(Modifier::REVERSED);
+        let css = style_to_css(&style);
+        assert!(css.contains("filter: invert(1)"));
+    }
+
+    #[test]
+    fn style_to_css_empty_returns_empty() {
+        let style = ratatui::style::Style::default();
+        let css = style_to_css(&style);
+        assert!(css.is_empty());
+    }
+
+    #[test]
+    fn style_to_css_combines_multiple_modifiers() {
+        let style = ratatui::style::Style::default()
+            .add_modifier(Modifier::BOLD | Modifier::ITALIC | Modifier::UNDERLINED);
+        let css = style_to_css(&style);
+        assert!(css.contains("font-weight: bold"));
+        assert!(css.contains("font-style: italic"));
+        assert!(css.contains("text-decoration: underline"));
+    }
+
+    // ----- html_escape edge cases -----
+
+    #[test]
+    fn html_escape_quotes() {
+        assert_eq!(html_escape("a\"b"), "a&quot;b");
+        assert_eq!(html_escape("a'b"), "a&#39;b");
+    }
+
+    #[test]
+    fn html_escape_empty_string() {
+        assert_eq!(html_escape(""), "");
+    }
+
+    #[test]
+    fn html_escape_preserves_plain_text() {
+        assert_eq!(html_escape("hello"), "hello");
+    }
+
+    #[test]
+    fn html_escape_handles_all_special_at_once() {
+        assert_eq!(
+            html_escape("<a href=\"x\">&'test'</a>"),
+            "&lt;a&nbsp;href=&quot;x&quot;&gt;&amp;&#39;test&#39;&lt;/a&gt;"
+        );
+    }
+
+    // ----- buffer_to_html with styled cells -----
+
+    #[test]
+    fn buffer_to_html_emits_span_for_styled_cell() {
+        use ratatui::style::{Color, Style};
+        let mut buf = Buffer::empty(ratatui::layout::Rect::new(0, 0, 1, 1));
+        buf[(0, 0)].set_style(Style::default().fg(Color::Green));
+        let html = buffer_to_html(&buf, 1, 1);
+        assert!(html.contains("<span"));
+        assert!(html.contains("color: #50fa7b"));
+    }
+
+    // ----- full_area -----
+
+    #[test]
+    fn full_area_returns_expected_rect() {
+        let rect = full_area(80, 24);
+        assert_eq!(rect.x, 0);
+        assert_eq!(rect.y, 0);
+        assert_eq!(rect.width, 80);
+        assert_eq!(rect.height, 24);
+    }
 }

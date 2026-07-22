@@ -22,3 +22,6 @@ serde = { workspace = true }
 [[bin]]
 name = "tui-inject"
 path = "src/main.rs"
+
+[dev-dependencies]
+pretty_assertions = { workspace = true }

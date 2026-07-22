@@ -37,6 +37,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - M6: `runtime.rs` line coverage 15% → 49% (main_loop fully covered via injected TestBackend + ScriptedEventSource; remaining gap is setup_terminal/restore_terminal/run wrapper which require a real TTY).
 - M6: Total line coverage 91.12% → 92.50% (839/907 lines). Test count 98 → 105.
 - M7: Total test count 105 → 137 (+29 in tui-inject + scenario module). Workspace now has 2 crates (ratatui-bubbles + tui-inject).
+- M8: tui-inject widget.rs/dump.rs render + Color/Modifier coverage pass — widget.rs 29% → 99%, dump.rs 71% → 100%. Workspace coverage 74.49% → 81.00% (+6.51pp). Total tests 137 → 153 (+16 in dump, +13 in widget).
 - M7: `tui-inject` binary crate — CLI tool for testing widgets via event injection (zinject for TUI). Commands: `list`, `render`, `snapshot`, `replay`, `record`, `fuzz`, `bench`. 7 widgets supported. TOML scenario format with 3 example scenarios.
 - M7: New `pub mod test_utils` in ratatui-bubbles exposing `ScriptedEventSource` for external test tooling.
 
