@@ -31,3 +31,6 @@ path = "examples/demo.rs"
 [[bench]]
 name = "prepared"
 harness = false
+
+[package.metadata.docs.rs]
+all-features = true
