@@ -20,7 +20,7 @@ rich set of batteries-included widgets that Bubble Tea gives you out of the box,
 
 - ✅ **Tier 1 (in progress):** `elm`, `list`, `viewport`, `text_input` — basic implementations land first
 - 🚧 **Tier 2 (stubbed):** `spinner`, `table`, `key_help`, `style` — API frozen, bodies pending
-- See [`docs/Phase-1-Plan.md`](docs/Phase-1-Plan.md) for the full migration matrix
+- See [`docs/ROADMAP.md`](docs/ROADMAP.md) for the full migration matrix
 
 ## Why
 
@@ -76,7 +76,7 @@ See the [module documentation](https://docs.rs/ratatui-bubbles) for each widget'
 - Tier 1 full implementations (`elm`, `list`, `viewport`, `text_input`) with edge-case test coverage
 - Tier 2 implementations (`spinner`, `table`, `key_help`, `style`)
 - Real async `Command`/`Program` event loop on top of crossterm
-- More Bubbles ports: file picker, progress bar, timer (see [Phase 1 Plan](docs/Phase-1-Plan.md))
+- More Bubbles ports: file picker, progress bar, timer (see [Roadmap](docs/ROADMAP.md))
 
 ## Inspiration
 

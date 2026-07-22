@@ -228,4 +228,24 @@ mod tests {
         t.sort_by(0); // descending
         assert_eq!(t.rows[0].cells()[0], "charlie");
     }
+
+    #[test]
+    fn len_returns_row_count() {
+        let mut t = Table::new(cols());
+        assert_eq!(t.len(), 0);
+        assert!(t.is_empty());
+        t.set_rows(vec![
+            TestRow(vec!["alice".into(), "30".into()]),
+            TestRow(vec!["bob".into(), "25".into()]),
+        ]);
+        assert_eq!(t.len(), 2);
+        assert!(!t.is_empty());
+    }
+
+    #[test]
+    fn is_empty_after_construction() {
+        let t = Table::<TestRow>::new(cols());
+        assert!(t.is_empty());
+        assert_eq!(t.len(), 0);
+    }
 }

@@ -17,11 +17,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - M4: `runtime` module with synchronous crossterm event loop runner (`App` trait + `run()` function).
 - M4: `examples/demo.rs` counter app showcasing the runtime (arrow keys, +/-, r reset, q/Esc quit).
 - 4 new unit tests for runtime drain_messages behavior.
+- M5: Test coverage heatmap — `docs/TEST-COVERAGE.md` with per-module pub API × test-layer matrix (98% coverage, 99 items, only 2 deferred runtime items untested).
+- M5: New integration test files: `tests/spinner_render.rs`, `tests/table_render.rs`, `tests/key_help_render.rs` — TestBackend render coverage for all Tier 2 modules.
+- M5: 13 new unit tests: viewport (height/set_height/set_lines/prev_match), table (len/is_empty), style (background/underline/padding/margin/border), spinner (all 8 SpinnerStyle variants), elm (Program::init trait).
+- M5: Gap Analysis section in TEST-COVERAGE.md classifying remaining untested items by reason (PTY/async/acceptable).
 
 ### Changed
 - `spinner`, `table`, `key_help`, `style` modules upgraded from Tier 2 stubs to full implementations (no more `todo!()` in any module).
 - Updated lib.rs module list to remove "Tier 2 — stubbed" annotations and reflect the new `runtime` module.
 - Total test count is now ~76 across 6+ suites.
+- M5: Renamed `docs/Phase-1-Plan.md` to `docs/ROADMAP.md` — the "Phase 1" name was meaningless outside our original 3-phase planning context. All repo references updated.
+- M5: Updated H1 title of ROADMAP.md from "Phase 1 Plan" to "Roadmap".
+- M5: Total test count: 98 (was 76). Test-to-pub-item coverage: 98% (was 83%).
 
 ### TODO
 - Tier 2 implementations.

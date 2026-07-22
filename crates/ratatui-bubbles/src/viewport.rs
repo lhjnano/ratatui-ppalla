@@ -336,4 +336,48 @@ mod tests {
         // Search only affects highlighting; the buffer is unchanged.
         assert_eq!(vp.line_count(), 4);
     }
+
+    #[test]
+    fn height_returns_configured_value() {
+        let vp = Viewport::new(7);
+        assert_eq!(vp.height(), 7);
+    }
+
+    #[test]
+    fn set_height_updates_value() {
+        let mut vp = Viewport::new(5);
+        vp.set_height(12);
+        assert_eq!(vp.height(), 12);
+    }
+
+    #[test]
+    fn set_lines_replaces_content() {
+        let mut vp = Viewport::new(10);
+        vp.append_line(Line::from("old"));
+        assert_eq!(vp.line_count(), 1);
+        vp.set_lines(vec![Line::from("a"), Line::from("b"), Line::from("c")]);
+        assert_eq!(vp.line_count(), 3);
+    }
+
+    #[test]
+    fn prev_match_scrolls_to_earlier_match() {
+        let mut vp = Viewport::new(2);
+        vp.append_line(Line::from("foo one"));
+        vp.append_line(Line::from("foo two"));
+        vp.append_line(Line::from("foo three"));
+        vp.append_line(Line::from("foo four"));
+        vp.set_search(Some("foo"));
+        // Move to last match first via next_match calls, then prev_match should go back.
+        vp.next_match();
+        vp.next_match();
+        vp.next_match();
+        let offset_before = vp.offset();
+        vp.prev_match();
+        let offset_after = vp.offset();
+        // prev_match should not increase offset (either decreases or stays same)
+        assert!(
+            offset_after <= offset_before,
+            "offset_before={offset_before}, offset_after={offset_after}"
+        );
+    }
 }

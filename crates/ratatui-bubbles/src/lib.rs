@@ -7,7 +7,7 @@
 //!
 //! ## Status
 //!
-//! Early development. Phase 1 in progress — see `docs/Phase-1-Plan.md`.
+//! Early development. Phase 1 in progress — see `docs/ROADMAP.md`.
 //!
 //! ## Modules
 //!

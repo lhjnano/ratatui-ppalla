@@ -148,4 +148,36 @@ mod tests {
         let s = Spinner::new(SpinnerStyle::Dot).with_fps(30);
         assert_eq!(s.fps(), 30);
     }
+
+    #[test]
+    fn all_spinner_styles_have_non_empty_frames() {
+        for style in [
+            SpinnerStyle::Line,
+            SpinnerStyle::Dot,
+            SpinnerStyle::MiniDot,
+            SpinnerStyle::Jump,
+            SpinnerStyle::Pulse,
+            SpinnerStyle::Meter,
+            SpinnerStyle::Hamburger,
+            SpinnerStyle::Ellipsis,
+        ] {
+            let frames = style.frames();
+            assert!(!frames.is_empty(), "style {style:?} returned empty frames");
+            for frame in frames {
+                assert!(
+                    !frame.is_empty(),
+                    "style {style:?} has an empty frame string"
+                );
+            }
+            let mut s = Spinner::new(style);
+            let initial = s.current_frame().to_string();
+            assert_eq!(initial, frames[0], "style {style:?} initial frame mismatch");
+            s.tick();
+            assert_eq!(
+                s.current_frame(),
+                frames[1],
+                "style {style:?} post-tick frame mismatch"
+            );
+        }
+    }
 }

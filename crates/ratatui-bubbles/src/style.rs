@@ -155,4 +155,36 @@ mod tests {
         assert!(s.add_modifier.contains(Modifier::BOLD));
         assert!(s.add_modifier.contains(Modifier::ITALIC));
     }
+
+    #[test]
+    fn background_sets_bg() {
+        let s = StyleBuilder::new().background(Color::Blue).build();
+        assert_eq!(s.bg, Some(Color::Blue));
+    }
+
+    #[test]
+    fn underline_adds_underlined_modifier() {
+        let s = StyleBuilder::new().underline().build();
+        assert!(s.add_modifier.contains(Modifier::UNDERLINED));
+    }
+
+    #[test]
+    fn padding_is_stored_without_affecting_build() {
+        // padding is accepted by the builder but not applied to Style (documented limitation).
+        // Verify build() still produces a valid default-equivalent Style when only padding is set.
+        let s = StyleBuilder::new().padding(2, 1).build();
+        assert_eq!(s, Style::default());
+    }
+
+    #[test]
+    fn margin_is_stored_without_affecting_build() {
+        let s = StyleBuilder::new().margin(1, 0).build();
+        assert_eq!(s, Style::default());
+    }
+
+    #[test]
+    fn border_is_stored_without_affecting_build() {
+        let s = StyleBuilder::new().border(BorderType::Rounded).build();
+        assert_eq!(s, Style::default());
+    }
 }

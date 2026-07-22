@@ -227,4 +227,19 @@ mod tests {
         );
         assert!(matches!(flat[0], Command::Tick));
     }
+
+    #[test]
+    fn program_init_can_be_called_via_trait_object() {
+        // Define a tiny Program implementation and verify init() is callable.
+        struct StubProgram;
+        impl Program for StubProgram {
+            type Msg = ();
+            fn init(&mut self) -> Command<Self::Msg> {
+                Command::none()
+            }
+        }
+        let mut p = StubProgram;
+        let cmd = Program::init(&mut p);
+        assert!(cmd.is_none());
+    }
 }

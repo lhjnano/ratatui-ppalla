@@ -1,4 +1,4 @@
-# Phase 1 Plan — Bubble Tea → Ratatui Migration
+# Roadmap — Bubble Tea → Ratatui Migration
 
 ## Overview
 
