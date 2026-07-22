@@ -1,6 +1,6 @@
 [workspace]
 resolver = "2"
-members = ["crates/ratatui-bubbles"]
+members = ["crates/ratatui-bubbles", "crates/tui-inject"]
 
 [workspace.package]
 version = "0.0.1"
@@ -20,3 +20,5 @@ crossterm = "0.28"
 tokio = { version = "1", features = ["full"] }
 insta = "1"
 pretty_assertions = "1"
+clap = { version = "4", features = ["derive"] }
+serde = { version = "1", features = ["derive"] }

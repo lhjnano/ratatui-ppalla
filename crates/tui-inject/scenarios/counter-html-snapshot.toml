@@ -1,0 +1,14 @@
+# counter-html-snapshot.toml — produce an HTML snapshot of the counter.
+# Run: tui-inject replay scenarios/counter-html-snapshot.toml > counter.html
+
+[widget]
+name = "counter"
+initial = 42
+
+[[events]]
+key = "q"
+
+[output]
+format = "html"
+width = 50
+height = 8

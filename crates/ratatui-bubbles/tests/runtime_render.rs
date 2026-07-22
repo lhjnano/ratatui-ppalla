@@ -5,7 +5,6 @@
 //! without touching the real terminal.
 
 use std::io;
-use std::time::Duration;
 
 use crossterm::event::{Event, KeyCode, KeyEvent, KeyEventKind, KeyEventState, KeyModifiers};
 use ratatui::backend::TestBackend;
@@ -14,7 +13,8 @@ use ratatui::layout::Rect;
 use ratatui::widgets::{Block, Borders, Paragraph};
 use ratatui::{Frame, Terminal};
 use ratatui_bubbles::elm::{Command, Model};
-use ratatui_bubbles::runtime::{main_loop, App, EventSource};
+use ratatui_bubbles::runtime::{main_loop, App};
+use ratatui_bubbles::test_utils::ScriptedEventSource;
 
 // ============================================================
 // Counter App -- copied from examples/demo.rs (private there),
@@ -77,51 +77,6 @@ impl App for Counter {
 
     fn should_quit(&self, msg: &Msg) -> bool {
         matches!(msg, Msg::Quit)
-    }
-}
-
-// ============================================================
-// ScriptedEventSource -- emits a pre-loaded queue of events
-// ============================================================
-
-/// A test [`EventSource`] that emits events from a pre-loaded queue and
-/// returns an error when exhausted, so the main loop exits cleanly if a
-/// test script forgets to terminate with a Quit-producing event.
-struct ScriptedEventSource {
-    events: Vec<Event>,
-    next: usize,
-}
-
-impl ScriptedEventSource {
-    fn new(events: Vec<Event>) -> Self {
-        Self { events, next: 0 }
-    }
-}
-
-impl EventSource for ScriptedEventSource {
-    fn poll(&mut self, _timeout: Duration) -> io::Result<bool> {
-        if self.next < self.events.len() {
-            Ok(true)
-        } else {
-            // Exhausted -- break the main loop via the `?` in main_loop.
-            Err(io::Error::new(
-                io::ErrorKind::UnexpectedEof,
-                "scripted event queue exhausted",
-            ))
-        }
-    }
-
-    fn read(&mut self) -> io::Result<Event> {
-        if self.next < self.events.len() {
-            let ev = self.events[self.next].clone();
-            self.next += 1;
-            Ok(ev)
-        } else {
-            Err(io::Error::new(
-                io::ErrorKind::UnexpectedEof,
-                "scripted event queue exhausted",
-            ))
-        }
     }
 }
 

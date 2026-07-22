@@ -1,0 +1,24 @@
+[package]
+name = "tui-inject"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+description = "CLI tool for testing ratatui-bubbles widgets via event injection"
+keywords = ["tui", "testing", "ratatui", "cli"]
+categories = ["command-line-utilities", "development-tools"]
+readme = "README.md"
+
+[dependencies]
+ratatui-bubbles = { path = "../ratatui-bubbles" }
+ratatui = { workspace = true }
+crossterm = { workspace = true }
+clap = { workspace = true }
+toml = "0.8"
+serde = { workspace = true }
+
+[[bin]]
+name = "tui-inject"
+path = "src/main.rs"

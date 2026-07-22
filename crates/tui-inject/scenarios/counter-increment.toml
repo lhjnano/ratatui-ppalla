@@ -1,0 +1,29 @@
+# counter-increment.toml — increment counter 5 times then quit.
+# Run: tui-inject replay scenarios/counter-increment.toml
+
+[widget]
+name = "counter"
+initial = 0
+
+[[events]]
+key = "+"
+
+[[events]]
+key = "+"
+
+[[events]]
+key = "+"
+
+[[events]]
+key = "+"
+
+[[events]]
+key = "+"
+
+[[events]]
+key = "q"
+
+[output]
+format = "text"
+width = 40
+height = 6

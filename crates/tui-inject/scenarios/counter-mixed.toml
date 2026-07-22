@@ -1,0 +1,32 @@
+# counter-mixed.toml — mixed increment/decrement using arrow keys.
+# Run: tui-inject replay scenarios/counter-mixed.toml
+
+[widget]
+name = "counter"
+initial = 10
+
+# Up = increment
+[[events]]
+key = "up"
+
+[[events]]
+key = "up"
+
+# Down = decrement
+[[events]]
+key = "down"
+
+[[events]]
+key = "down"
+
+[[events]]
+key = "down"
+
+# Final value should be 10 + 2 - 3 = 9
+[[events]]
+key = "esc"
+
+[output]
+format = "text"
+width = 40
+height = 6

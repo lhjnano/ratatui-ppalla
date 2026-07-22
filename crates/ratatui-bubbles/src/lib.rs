@@ -34,3 +34,5 @@ pub mod key_help;
 pub mod spinner;
 pub mod style;
 pub mod table;
+
+pub mod test_utils;
