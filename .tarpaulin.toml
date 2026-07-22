@@ -1,0 +1,8 @@
+# cargo-tarpaulin config — generates line-coverage report for ratatui-bubbles.
+# Run: `cargo tarpaulin --config .tarpaulin.toml`
+# Report: docs/coverage/index.html
+
+[default]
+skip-clean = true
+out = ["Html", "Std"]
+output-dir = "docs/coverage"
