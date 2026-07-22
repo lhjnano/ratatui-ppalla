@@ -6,3 +6,6 @@
 .idea/
 *.swp
 .DS_Store
+
+# Local planning documents
+docs/ROADMAP.md
