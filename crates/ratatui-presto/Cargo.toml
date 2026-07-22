@@ -14,13 +14,20 @@ readme.workspace = true
 [dependencies]
 ratatui = { workspace = true }
 crossterm = { workspace = true }
+unicode-segmentation = { workspace = true }
+unicode-width = { workspace = true }
 
 [dev-dependencies]
 tokio = { workspace = true }
 insta = { workspace = true }
 pretty_assertions = { workspace = true }
 proptest = { workspace = true }
+criterion = { workspace = true }
 
 [[example]]
 name = "demo"
 path = "examples/demo.rs"
+
+[[bench]]
+name = "prepared"
+harness = false

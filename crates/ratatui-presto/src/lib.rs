@@ -8,6 +8,8 @@
 //! ## Status
 //!
 //! Early development. Phase 1 in progress — see `docs/ROADMAP.md`.
+//! The [`prepared`] module ships the core `Preparable` trait and `LayoutCtx`
+//! (Pretext-inspired prepare/layout separation).
 //!
 //! ## Modules
 //!
@@ -20,12 +22,14 @@
 //! - [`table`] — Enhanced Table widget (sort/navigate/select)
 //! - [`key_help`] — Key binding help display
 //! - [`style`] — Lipgloss-style builder API
+//! - [`prepared`] — Prepared primitives (Pretext-inspired prepare/layout separation)
 
 #![warn(missing_docs)]
 #![warn(clippy::all, clippy::pedantic)]
 
 pub mod elm;
 pub mod list;
+pub mod prepared;
 pub mod runtime;
 pub mod text_input;
 pub mod viewport;
