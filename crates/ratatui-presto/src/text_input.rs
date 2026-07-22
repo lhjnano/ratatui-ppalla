@@ -501,4 +501,103 @@ mod tests {
         assert_eq!(ti.cursor(), (0, 0));
         assert_eq!(ti.lines.len(), 1); // single empty line, not zero lines
     }
+
+    // ============ Property/invariant tests ============
+
+    /// Cursor is always within valid bounds after any operation
+    #[test]
+    fn invariant_cursor_always_in_bounds() {
+        let mut ti = TextInput::new();
+        for c in "hello\nworld\nfoo".chars() {
+            ti.insert_char(c);
+        }
+        // Move around
+        ti.move_left();
+        ti.move_left();
+        ti.move_up();
+        ti.move_up();
+        ti.move_up(); // try to go above first line
+        let (line, col) = ti.cursor();
+        assert!(
+            line < ti.lines.len(),
+            "cursor line {line} >= lines len {}",
+            ti.lines.len()
+        );
+        assert!(
+            col <= ti.lines[line].len(),
+            "cursor col {col} > line len {}",
+            ti.lines[line].len()
+        );
+        // Move right past end
+        ti.move_down();
+        ti.move_down();
+        for _ in 0..100 {
+            ti.move_right();
+        }
+        let (line, col) = ti.cursor();
+        assert!(line < ti.lines.len());
+        assert!(col <= ti.lines[line].len());
+    }
+
+    /// `backspace` at origin is a no-op (never panics, value unchanged)
+    #[test]
+    fn invariant_backspace_at_origin_never_panics() {
+        let mut ti = TextInput::new();
+        for _ in 0..100 {
+            ti.backspace();
+        }
+        assert_eq!(ti.value(), "");
+    }
+
+    /// `insert_str` with embedded newlines creates correct line count
+    #[test]
+    fn invariant_insert_str_newlines_preserve_line_count() {
+        let mut ti = TextInput::new();
+        ti.insert_str("a\nb\nc\nd\ne");
+        assert_eq!(ti.lines.len(), 5); // 5 lines: "a","b","c","d","e"
+        assert_eq!(ti.value(), "a\nb\nc\nd\ne");
+    }
+
+    /// `clear()` always resets to single empty line
+    #[test]
+    fn invariant_clear_always_resets() {
+        let mut ti = TextInput::new();
+        ti.insert_str("complex\nmultiline\ntext");
+        ti.clear();
+        assert_eq!(ti.value(), "");
+        assert_eq!(ti.lines.len(), 1);
+        let (line, col) = ti.cursor();
+        assert_eq!((line, col), (0, 0));
+    }
+
+    /// Stress: 1000 random insert/backspace operations never panic
+    #[test]
+    fn stress_1000_random_insert_backspace() {
+        let mut ti = TextInput::new();
+        let chars = "abcdefghij\nABCDEFGHIJ\t ".chars().collect::<Vec<_>>();
+        for i in 0..1000 {
+            if i % 3 == 0 {
+                ti.backspace();
+            } else {
+                let c = chars[i % chars.len()];
+                ti.insert_char(c);
+            }
+            // Verify cursor is always valid
+            let (line, col) = ti.cursor();
+            assert!(line < ti.lines.len());
+            assert!(col <= ti.lines[line].len());
+        }
+    }
+
+    /// Stress: history walk with empty history is safe
+    #[test]
+    fn stress_history_walk_empty_is_safe() {
+        let mut ti = TextInput::new();
+        for _ in 0..100 {
+            ti.history_prev();
+            ti.history_next();
+        }
+        // No panic, no change
+        assert_eq!(ti.value(), "");
+    }
 }

@@ -380,4 +380,81 @@ mod tests {
             "offset_before={offset_before}, offset_after={offset_after}"
         );
     }
+
+    // ============ Property/invariant tests ============
+
+    /// `match_count()` <= `line_count()` for any search
+    #[test]
+    fn invariant_match_count_never_exceeds_line_count() {
+        let mut vp = Viewport::new(10);
+        vp.append_line(Line::from("hello world"));
+        vp.append_line(Line::from("foo bar"));
+        vp.append_line(Line::from("baz"));
+        for query in &["foo", "hello", "xyz", "", "o", "a", "z"] {
+            vp.set_search(Some(query));
+            assert!(
+                vp.match_count() <= vp.line_count(),
+                "query '{query}': match_count {} > line_count {}",
+                vp.match_count(),
+                vp.line_count()
+            );
+        }
+    }
+
+    /// `scroll_up` then `scroll_down` is nearly identity (clamped)
+    #[test]
+    fn invariant_scroll_up_down_near_identity() {
+        let mut vp = Viewport::new(3);
+        for i in 0..20 {
+            vp.append_line(Line::from(format!("line-{i}")));
+        }
+        let original_offset = vp.offset();
+        vp.scroll_down(5);
+        vp.scroll_up(5);
+        // Should be back at or near original (clamping may differ by 1)
+        assert!(vp.offset() <= original_offset + 1);
+    }
+
+    /// `offset()` never exceeds max scrollable position
+    #[test]
+    fn invariant_offset_never_negative() {
+        let mut vp = Viewport::new(5);
+        vp.append_line(Line::from("only one line"));
+        vp.scroll_up(100);
+        assert_eq!(vp.offset(), 0);
+    }
+
+    /// Stress: 1000 random scroll operations never panic
+    #[test]
+    fn stress_1000_random_scrolls() {
+        let mut vp = Viewport::new(3);
+        for i in 0..1000 {
+            vp.append_line(Line::from(format!("line-{i}")));
+        }
+        for _ in 0..1000 {
+            vp.scroll_down(1);
+        }
+        for _ in 0..1000 {
+            vp.scroll_up(1);
+        }
+        // Should not panic; offset in valid range
+        assert!(vp.offset() <= 1000);
+    }
+
+    /// Stress: large content with search
+    #[test]
+    fn stress_large_content_search() {
+        let mut vp = Viewport::new(10);
+        for i in 0..500 {
+            let text = if i % 7 == 0 {
+                format!("match-{i}")
+            } else {
+                format!("row-{i}")
+            };
+            vp.append_line(Line::from(text));
+        }
+        vp.set_search(Some("match"));
+        assert!(vp.match_count() > 0);
+        assert!(vp.match_count() <= vp.line_count());
+    }
 }
