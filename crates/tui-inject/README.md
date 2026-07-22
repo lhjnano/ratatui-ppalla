@@ -1,6 +1,6 @@
 # tui-inject
 
-CLI tool for testing [ratatui-presto](../ratatui-presto) widgets via event injection —
+CLI tool for testing [ratatui-ppalla](../ratatui-ppalla) widgets via event injection —
 the TUI equivalent of `zinject` for ZFS. Inspect, render, snapshot, replay, record,
 fuzz, and benchmark any widget without touching a real terminal.
 
@@ -131,4 +131,4 @@ height = 6
 
 ## License
 
-MIT OR Apache-2.0, same as ratatui-presto.
+MIT OR Apache-2.0, same as ratatui-ppalla.

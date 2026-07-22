@@ -11,7 +11,7 @@
 //!
 //! Because damage merging is a single linear scan over a `Vec<bool>`, the hot
 //! path performs only integer comparisons plus a handful of rect allocations —
-//! matching the "presto" (fast) value proposition of ratatui-presto.
+//! matching the "ppalla" (빨라, "fast" in Korean) value proposition of ratatui-ppalla.
 //!
 //! # Dirty-tracking model
 //!
@@ -119,7 +119,7 @@ pub struct BufferLayout {
 /// # Examples
 ///
 /// ```
-/// use ratatui_presto::prepared::{BufferInput, LayoutCtx, Preparable, PreparedBuffer};
+/// use ratatui_ppalla::prepared::{BufferInput, LayoutCtx, Preparable, PreparedBuffer};
 ///
 /// let mut prepared = PreparedBuffer::prepare(BufferInput { width: 4, height: 4 });
 /// prepared.clear_dirty();            // start with a clean grid

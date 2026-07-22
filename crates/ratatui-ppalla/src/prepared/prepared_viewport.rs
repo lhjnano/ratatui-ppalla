@@ -33,7 +33,7 @@
 //! # Examples
 //!
 //! ```
-//! use ratatui_presto::prepared::{LayoutCtx, Preparable, PreparedViewport, ViewportInput};
+//! use ratatui_ppalla::prepared::{LayoutCtx, Preparable, PreparedViewport, ViewportInput};
 //!
 //! let input = ViewportInput {
 //!     lines: vec!["find me".to_string(), "nothing".to_string(), "find me too".to_string()],

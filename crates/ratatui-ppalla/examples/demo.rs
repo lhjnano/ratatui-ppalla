@@ -1,4 +1,4 @@
-//! Counter demo for `ratatui_presto`.
+//! Counter demo for `ratatui_ppalla`.
 //!
 //! Run with: `cargo run --example demo`
 //!
@@ -14,8 +14,8 @@ use ratatui::style::{Color, Modifier, Style};
 use ratatui::text::{Line, Span};
 use ratatui::widgets::{Block, Borders, Paragraph};
 use ratatui::Frame;
-use ratatui_presto::elm::{Command, Model};
-use ratatui_presto::runtime::{run, App};
+use ratatui_ppalla::elm::{Command, Model};
+use ratatui_ppalla::runtime::{run, App};
 
 #[derive(Debug, Default)]
 struct Counter {
@@ -43,7 +43,7 @@ impl Model<Msg> for Counter {
 
     fn view(&self, frame: &mut Frame, area: Rect) {
         let title = Span::styled(
-            " ratatui-presto counter demo ",
+            " ratatui-ppalla counter demo ",
             Style::default()
                 .fg(Color::Cyan)
                 .add_modifier(Modifier::BOLD),

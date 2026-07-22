@@ -1,4 +1,4 @@
-//! Testing utilities for ratatui-presto.
+//! Testing utilities for ratatui-ppalla.
 //!
 //! Currently exposes [`ScriptedEventSource`], a test
 //! [`EventSource`](crate::runtime::EventSource) that emits events from a

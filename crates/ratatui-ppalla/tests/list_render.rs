@@ -1,4 +1,4 @@
-//! Integration tests for [`ratatui_presto::list::List`] rendering.
+//! Integration tests for [`ratatui_ppalla::list::List`] rendering.
 //!
 //! Uses ratatui's [`TestBackend`](ratatui::backend::TestBackend) to render the
 //! widget into an in-memory buffer and assert on the visible cell content.
@@ -12,7 +12,7 @@ use ratatui::layout::Rect;
 use ratatui::style::Modifier;
 use ratatui::text::Line;
 use ratatui::{Frame, Terminal};
-use ratatui_presto::list::{List, ListItem};
+use ratatui_ppalla::list::{List, ListItem};
 
 struct Task(&'static str);
 

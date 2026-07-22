@@ -26,7 +26,7 @@
 //!
 //! ```
 //! use ratatui::layout::{Constraint, Direction};
-//! use ratatui_presto::prepared::{LayoutCtx, Preparable, PreparedLayout, SplitSpec};
+//! use ratatui_ppalla::prepared::{LayoutCtx, Preparable, PreparedLayout, SplitSpec};
 //!
 //! let spec = SplitSpec::new(vec![Constraint::Length(1), Constraint::Min(0)])
 //!     .with_direction(Direction::Vertical);
@@ -151,7 +151,7 @@ impl Clone for PreparedLayoutState {
 ///
 /// ```
 /// use ratatui::layout::Constraint;
-/// use ratatui_presto::prepared::{LayoutCtx, Preparable, PreparedLayout};
+/// use ratatui_ppalla::prepared::{LayoutCtx, Preparable, PreparedLayout};
 ///
 /// let prepared = PreparedLayout::prepare_vertical(vec![Constraint::Length(1), Constraint::Min(0)]);
 /// let layout = PreparedLayout::layout(&prepared, LayoutCtx::new(10, 5));

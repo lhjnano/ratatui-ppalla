@@ -1,13 +1,13 @@
-# ratatui-presto
+# ratatui-ppalla
 
-[![CI](https://img.shields.io/github/actions/workflow/status/lhjnano/ratatui-presto/ci.yml?branch=main&logo=github)](https://github.com/lhjnano/ratatui-presto/actions/workflows/ci.yml)
-[![crates.io](https://img.shields.io/crates/v/ratatui-presto?logo=rust&label=crates.io)](https://crates.io/crates/ratatui-presto)
-[![docs.rs](https://img.shields.io/docsrs/ratatui-presto?logo=docsdotrs&label=docs.rs)](https://docs.rs/ratatui-presto/0.0.1-alpha)
-[![license](https://img.shields.io/crates/l/ratatui-presto?logo=opensourcehardware&label=license)](#license)
+[![CI](https://img.shields.io/github/actions/workflow/status/lhjnano/ratatui-ppalla/ci.yml?branch=main&logo=github)](https://github.com/lhjnano/ratatui-ppalla/actions/workflows/ci.yml)
+[![crates.io](https://img.shields.io/crates/v/ratatui-ppalla?logo=rust&label=crates.io)](https://crates.io/crates/ratatui-ppalla)
+[![docs.rs](https://img.shields.io/docsrs/ratatui-ppalla?logo=docsdotrs&label=docs.rs)](https://docs.rs/ratatui-ppalla/0.0.1-alpha)
+[![license](https://img.shields.io/crates/l/ratatui-ppalla?logo=opensourcehardware&label=license)](#license)
 
 > High-performance TUI primitives for [Ratatui] — Pretext-inspired prepare/layout pattern
 
-`ratatui-presto` brings the ergonomics of the Bubble Tea component model to
+`ratatui-ppalla` brings the ergonomics of the Bubble Tea component model to
 Rust, with a focus on performance for high-frequency multi-pane TUI applications.
 It combines [Bubble Tea](https://github.com/charmbracelet/bubbletea)-style Elm architecture,
 [Bubbles](https://github.com/charmbracelet/bubbles)-style widgets, and a
@@ -55,24 +55,24 @@ build everything else yourself. The Go world, by contrast, has [Bubble Tea](http
 plus its companion libraries — a cohesive set of widgets, an Elm-style update loop, and a declarative
 styling DSL — that make it trivial to assemble polished terminal apps.
 
-`ratatui-presto` fills that gap. It brings the ergonomics of the Bubble Tea component model to
+`ratatui-ppalla` fills that gap. It brings the ergonomics of the Bubble Tea component model to
 Rust without reimplementing Ratatui's rendering engine: same mental model, same widget vocabulary,
 idiomatic Rust types and traits.
 
 ## Installation
 
 ```sh
-cargo add ratatui-presto
+cargo add ratatui-ppalla
 ```
 
-> **Note:** `ratatui-presto` is not yet published to crates.io. Until the first tagged release,
+> **Note:** `ratatui-ppalla` is not yet published to crates.io. Until the first tagged release,
 > clone the repository and depend on it via a path or git dependency:
 >
 > ```toml
 > [dependencies]
-> ratatui-presto = { path = "../ratatui-presto" }
+> ratatui-ppalla = { path = "../ratatui-ppalla" }
 > # or
-> ratatui-presto = { git = "https://github.com/lhjnano/ratatui-presto" }
+> ratatui-ppalla = { git = "https://github.com/lhjnano/ratatui-ppalla" }
 > ```
 
 ## Usage
@@ -94,7 +94,7 @@ list.set_filter("ship");
 assert_eq!(list.filtered_len(), 1);
 ```
 
-See the [module documentation](https://docs.rs/ratatui-presto) for each widget's full API.
+See the [module documentation](https://docs.rs/ratatui-ppalla) for each widget's full API.
 
 ## Roadmap
 

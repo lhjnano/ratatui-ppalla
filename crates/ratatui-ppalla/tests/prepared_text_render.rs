@@ -12,7 +12,7 @@
 use pretty_assertions::assert_eq;
 use ratatui::buffer::Buffer;
 use ratatui::layout::Rect;
-use ratatui_presto::prepared::{LayoutCtx, Preparable, PreparedText, TextLayout};
+use ratatui_ppalla::prepared::{LayoutCtx, Preparable, PreparedText, TextLayout};
 
 /// Paint a [`TextLayout`] into `buf` within `area`: each visible display line is
 /// rendered left-to-right, advancing by every segment's cached Unicode width.

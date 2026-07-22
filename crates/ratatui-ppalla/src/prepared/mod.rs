@@ -2,8 +2,8 @@
 //!
 //! Core insight: separate expensive one-time work (`prepare`) from cheap
 //! per-frame work (`layout`). Because every TUI text width is predetermined by
-//! its Unicode width, the prepare step is extremely cheap. This is the "presto"
-//! (fast) value proposition of ratatui-presto.
+//! its Unicode width, the prepare step is extremely cheap. This is the "ppalla"
+//! (빨라, "fast" in Korean) value proposition of ratatui-ppalla.
 //!
 //! ## Pattern
 //!

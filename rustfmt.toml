@@ -1,4 +1,4 @@
-# Rust formatting configuration for ratatui-presto
+# Rust formatting configuration for ratatui-ppalla
 # https://rust-lang.github.io/rustfmt/
 
 edition = "2021"

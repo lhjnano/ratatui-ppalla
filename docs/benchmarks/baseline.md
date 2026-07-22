@@ -1,4 +1,4 @@
-# Benchmark Baseline — ratatui-presto prepared primitives
+# Benchmark Baseline — ratatui-ppalla prepared primitives
 
 > First quantitative baseline for the PreparedText / PreparedLayout primitives
 > (ROADMAP Direction 2). Measured with `criterion` on the prepared benchmark
@@ -126,7 +126,7 @@ Items 3 and 4 are now optional polish — the acceptance target is already met.
 ## Reproducing
 
 ```bash
-cd ~/source/project/ratatui-presto
+cd ~/source/project/ratatui-ppalla
 cargo bench --bench prepared
 ```
 

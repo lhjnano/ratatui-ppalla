@@ -1,4 +1,4 @@
-//! Integration test exercising the Elm architecture's [`ratatui_presto::elm::Model`] trait
+//! Integration test exercising the Elm architecture's [`ratatui_ppalla::elm::Model`] trait
 //! via a tiny counter example, rendered into a TestBackend buffer.
 
 use pretty_assertions::assert_eq;
@@ -7,7 +7,7 @@ use ratatui::buffer::{Buffer, Cell};
 use ratatui::layout::Rect;
 use ratatui::widgets::Paragraph;
 use ratatui::{Frame, Terminal};
-use ratatui_presto::elm::{flatten, Command, Model};
+use ratatui_ppalla::elm::{flatten, Command, Model};
 
 /// A minimal [`Model`] that counts increment/decrement messages.
 #[derive(Default)]

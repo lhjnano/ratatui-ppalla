@@ -1,16 +1,16 @@
 [workspace]
 resolver = "2"
-members = ["crates/ratatui-presto", "crates/tui-inject"]
+members = ["crates/ratatui-ppalla", "crates/tui-inject"]
 
 [workspace.package]
 version = "0.0.1"
 edition = "2021"
 authors = ["HeonJe LEE <lhjnano@gmail.com>"]
 license = "MIT OR Apache-2.0"
-repository = "https://github.com/lhjnano/ratatui-presto"
-homepage = "https://github.com/lhjnano/ratatui-presto"
+repository = "https://github.com/lhjnano/ratatui-ppalla"
+homepage = "https://github.com/lhjnano/ratatui-ppalla"
 description = "High-performance TUI primitives for Ratatui — Pretext-inspired prepare/layout pattern"
-keywords = ["tui", "terminal", "ratatui", "performance", "presto"]
+keywords = ["tui", "terminal", "ratatui", "performance", "ppalla"]
 categories = ["command-line-interface", "command-line-utilities"]
 readme = "README.md"
 

@@ -2,7 +2,7 @@
 
 use clap::{Parser, Subcommand};
 
-/// CLI tool for testing ratatui-presto widgets via event injection.
+/// CLI tool for testing ratatui-ppalla widgets via event injection.
 #[derive(Parser, Debug)]
 #[command(name = "tui-inject", version, about, long_about = None)]
 pub struct Cli {

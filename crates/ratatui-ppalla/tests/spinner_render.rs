@@ -1,4 +1,4 @@
-//! Integration tests for [`ratatui_presto::spinner::Spinner`] rendering.
+//! Integration tests for [`ratatui_ppalla::spinner::Spinner`] rendering.
 //!
 //! Uses ratatui's [`TestBackend`] to render the widget into an in-memory buffer
 //! and assert on the visible cell content.
@@ -8,7 +8,7 @@ use ratatui::backend::TestBackend;
 use ratatui::buffer::Buffer;
 use ratatui::layout::Rect;
 use ratatui::{Frame, Terminal};
-use ratatui_presto::spinner::{Spinner, SpinnerStyle};
+use ratatui_ppalla::spinner::{Spinner, SpinnerStyle};
 
 /// Render `spinner` into a fresh `width`x`height` TestBackend buffer.
 fn render_buffer(spinner: &Spinner, width: u16, height: u16) -> Buffer {

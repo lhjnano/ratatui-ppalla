@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to ratatui-presto will be documented in this file.
+All notable changes to ratatui-ppalla will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
-- Initial workspace scaffold (`Cargo.toml` workspace + `crates/ratatui-presto` member crate).
+- Initial workspace scaffold (`Cargo.toml` workspace + `crates/ratatui-ppalla` member crate).
 - Tier 1 modules with functional scaffolding: `elm` (Elm architecture traits), `list` (filterable list), `viewport` (searchable scrollable viewport), `text_input` (multi-line text input with history).
 - Tier 2 stub modules with frozen public API: `spinner`, `table`, `key_help`, `style`.
 - 24 unit tests covering Tier 1 behavior.
@@ -36,14 +36,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - M5: Removed hand-written `docs/TEST-COVERAGE.md` (markdown matrix) — replaced by real tarpaulin line-coverage data.
 - M6: `runtime.rs` line coverage 15% → 49% (main_loop fully covered via injected TestBackend + ScriptedEventSource; remaining gap is setup_terminal/restore_terminal/run wrapper which require a real TTY).
 - M6: Total line coverage 91.12% → 92.50% (839/907 lines). Test count 98 → 105.
-- M7: Total test count 105 → 137 (+29 in tui-inject + scenario module). Workspace now has 2 crates (ratatui-presto + tui-inject).
+- M7: Total test count 105 → 137 (+29 in tui-inject + scenario module). Workspace now has 2 crates (ratatui-ppalla + tui-inject).
 - M8: tui-inject widget.rs/dump.rs render + Color/Modifier coverage pass — widget.rs 29% → 99%, dump.rs 71% → 100%. Workspace coverage 74.49% → 81.00% (+6.51pp). Total tests 137 → 153 (+16 in dump, +13 in widget).
 - M7: `tui-inject` binary crate — CLI tool for testing widgets via event injection (zinject for TUI). Commands: `list`, `render`, `snapshot`, `replay`, `record`, `fuzz`, `bench`. 7 widgets supported. TOML scenario format with 3 example scenarios.
-- M7: New `pub mod test_utils` in ratatui-presto exposing `ScriptedEventSource` for external test tooling.
+- M7: New `pub mod test_utils` in ratatui-ppalla exposing `ScriptedEventSource` for external test tooling.
 
 ### TODO
 - Tier 2 implementations.
 - Async `Command`/`Program` event loop.
 - Integration tests and a working `examples/demo.rs`.
 
-[Unreleased]: https://github.com/lhjnano/ratatui-presto/compare/HEAD
+[Unreleased]: https://github.com/lhjnano/ratatui-ppalla/compare/HEAD

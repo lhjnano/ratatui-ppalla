@@ -108,7 +108,7 @@ pub struct ListLayout {
 /// # Examples
 ///
 /// ```
-/// use ratatui_presto::prepared::{LayoutCtx, Preparable, PreparedList, ListInput};
+/// use ratatui_ppalla::prepared::{LayoutCtx, Preparable, PreparedList, ListInput};
 ///
 /// let input = ListInput {
 ///     items: vec!["apple".to_string(), "banana".to_string(), "cherry".to_string()],

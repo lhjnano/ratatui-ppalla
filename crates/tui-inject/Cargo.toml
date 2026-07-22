@@ -6,13 +6,13 @@ authors.workspace = true
 license.workspace = true
 repository.workspace = true
 homepage.workspace = true
-description = "CLI tool for testing ratatui-presto widgets via event injection"
+description = "CLI tool for testing ratatui-ppalla widgets via event injection"
 keywords = ["tui", "testing", "ratatui", "cli"]
 categories = ["command-line-utilities", "development-tools"]
 readme = "README.md"
 
 [dependencies]
-ratatui-presto = { path = "../ratatui-presto" }
+ratatui-ppalla = { path = "../ratatui-ppalla" }
 ratatui = { workspace = true }
 crossterm = { workspace = true }
 clap = { workspace = true }

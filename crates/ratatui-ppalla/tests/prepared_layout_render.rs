@@ -12,7 +12,7 @@ use pretty_assertions::assert_eq;
 use ratatui::buffer::Buffer;
 use ratatui::layout::{Constraint, Direction, Rect};
 use ratatui::style::Style;
-use ratatui_presto::prepared::{LayoutCtx, Preparable, PreparedLayout, SplitLayout, SplitSpec};
+use ratatui_ppalla::prepared::{LayoutCtx, Preparable, PreparedLayout, SplitLayout, SplitSpec};
 
 /// Prepare `spec`, lay it out at `width`x`height`, and return a fresh buffer
 /// alongside the [`SplitLayout`] (its rects describe how the area is split).

@@ -29,7 +29,7 @@ use ratatui::backend::TestBackend;
 use ratatui::layout::Constraint;
 use ratatui::widgets::{Paragraph, Wrap};
 use ratatui::{Frame, Terminal};
-use ratatui_presto::prepared::{
+use ratatui_ppalla::prepared::{
     BufferInput, LayoutCtx, ListInput, Preparable, PreparedBuffer, PreparedLayout, PreparedList,
     PreparedTable, PreparedText, PreparedViewport, SortSpec, TableColumn, TableInput,
     ViewportInput,

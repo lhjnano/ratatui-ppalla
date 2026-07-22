@@ -9,8 +9,8 @@
 //! arithmetic** — no Unicode work — and windows the result by scroll/height.
 //!
 //! Because every grapheme's cell width is fixed and known up front, the hot
-//! path is a tight loop of integer comparisons, matching the "presto" (fast)
-//! value proposition of ratatui-presto.
+//! path is a tight loop of integer comparisons, matching the "ppalla" (빨라,
+//! "fast" in Korean) value proposition of ratatui-ppalla.
 //!
 //! # Grapheme width model
 //!
@@ -102,7 +102,7 @@ impl PreparedTextState {
 /// # Examples
 ///
 /// ```
-/// use ratatui_presto::prepared::{LayoutCtx, Preparable, PreparedText};
+/// use ratatui_ppalla::prepared::{LayoutCtx, Preparable, PreparedText};
 ///
 /// let prepared = PreparedText::prepare("hello world".to_string());
 /// let layout = PreparedText::layout(&prepared, LayoutCtx::new(5, 3));

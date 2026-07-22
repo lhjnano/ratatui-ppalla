@@ -30,7 +30,7 @@
 //! # Examples
 //!
 //! ```
-//! use ratatui_presto::prepared::{
+//! use ratatui_ppalla::prepared::{
 //!     LayoutCtx, Preparable, PreparedTable, SortSpec, TableColumn, TableInput,
 //! };
 //!
