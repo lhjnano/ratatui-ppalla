@@ -142,6 +142,43 @@ pub struct TableLayout {
     pub total: usize,
 }
 
+impl TableLayout {
+    /// Paint the visible rows into `buf` within `area`, using the cached
+    /// `column_widths` to place each cell horizontally. Cells are written via
+    /// [`Buffer::set_string`] and may overflow into the next column if longer
+    /// than the width (callers should truncate cell strings before prepare if
+    /// strict clipping is required).
+    ///
+    /// This is the render bridge for [`PreparedTable`].
+    pub fn paint(
+        &self,
+        buf: &mut ratatui::buffer::Buffer,
+        area: ratatui::layout::Rect,
+        style: ratatui::style::Style,
+    ) {
+        for (row, vis) in self.rows.iter().enumerate() {
+            let Ok(y) = u16::try_from(row) else {
+                break;
+            };
+            let Some(y) = area.y.checked_add(y) else {
+                break;
+            };
+            if y >= area.bottom() {
+                break;
+            }
+            let mut x = area.x;
+            for (col, cell) in vis.cells.iter().enumerate() {
+                if x >= area.right() {
+                    break;
+                }
+                buf.set_string(x, y, cell, style);
+                let w = self.column_widths.get(col).copied().unwrap_or(0);
+                x = x.saturating_add(w);
+            }
+        }
+    }
+}
+
 /// Prepared sortable-table primitive using the prepare/layout separation.
 ///
 /// Implements [`Preparable`]. The input is a [`TableInput`].

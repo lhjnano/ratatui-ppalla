@@ -96,6 +96,39 @@ pub struct ViewportLayout {
     pub matches_in_view: Vec<usize>,
 }
 
+impl ViewportLayout {
+    /// Paint the visible lines into `buf` within `area`. Lines flagged
+    /// `is_match` are drawn with `match_style` (e.g. highlighted); all others
+    /// use `normal_style`.
+    ///
+    /// This is the render bridge for [`PreparedViewport`].
+    pub fn paint(
+        &self,
+        buf: &mut ratatui::buffer::Buffer,
+        area: ratatui::layout::Rect,
+        normal_style: ratatui::style::Style,
+        match_style: ratatui::style::Style,
+    ) {
+        for (row, line) in self.lines.iter().enumerate() {
+            let Ok(y) = u16::try_from(row) else {
+                break;
+            };
+            let Some(y) = area.y.checked_add(y) else {
+                break;
+            };
+            if y >= area.bottom() {
+                break;
+            }
+            let style = if line.is_match {
+                match_style
+            } else {
+                normal_style
+            };
+            buf.set_string(area.x, y, &line.text, style);
+        }
+    }
+}
+
 impl PreparedViewportState {
     /// Number of lines in the buffer.
     #[must_use]

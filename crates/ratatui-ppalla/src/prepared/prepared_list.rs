@@ -91,6 +91,34 @@ pub struct ListLayout {
     pub total: usize,
 }
 
+impl ListLayout {
+    /// Paint the visible items into `buf` within `area`, one item per row,
+    /// applying `style` to each. Each item's `text` is written via
+    /// [`Buffer::set_string`]; rows beyond `area` are clipped.
+    ///
+    /// This is the render bridge for [`PreparedList`], analogous to
+    /// [`TextLayout::paint`](super::TextLayout::paint).
+    pub fn paint(
+        &self,
+        buf: &mut ratatui::buffer::Buffer,
+        area: ratatui::layout::Rect,
+        style: ratatui::style::Style,
+    ) {
+        for (row, item) in self.items.iter().enumerate() {
+            let Ok(y) = u16::try_from(row) else {
+                break;
+            };
+            let Some(y) = area.y.checked_add(y) else {
+                break;
+            };
+            if y >= area.bottom() {
+                break;
+            }
+            buf.set_string(area.x, y, &item.text, style);
+        }
+    }
+}
+
 /// Prepared list primitive using the prepare/layout separation.
 ///
 /// Implements [`Preparable`]. The input is a [`ListInput`] (items plus a filter
