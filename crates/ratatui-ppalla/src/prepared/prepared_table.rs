@@ -145,7 +145,7 @@ pub struct TableLayout {
 impl TableLayout {
     /// Paint the visible rows into `buf` within `area`, using the cached
     /// `column_widths` to place each cell horizontally. Cells are written via
-    /// [`Buffer::set_string`] and may overflow into the next column if longer
+    /// `Buffer::set_string` and may overflow into the next column if longer
     /// than the width (callers should truncate cell strings before prepare if
     /// strict clipping is required).
     ///

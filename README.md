@@ -52,6 +52,8 @@ optimization journey in [`docs/benchmarks/baseline.md`](docs/benchmarks/baseline
 | `PreparedTable` (1000 rows) | **2.78 µs** | 0.017% |
 | `PreparedViewport` (1000 lines) | **478 ns** | 0.003% |
 | `PreparedBuffer` (80×24 damage) | **37 ns** | 0.0002% |
+| `PreparedBlock` (single, vs ratatui `Block`) | **497 ns** (Block: 1.02 µs) | 2.05× faster |
+| `PreparedBlock` (20-pane, vs 20× `Block`) | **8.09 µs** (Block: 20.9 µs) | 2.58× faster |
 
 `PreparedText::layout` went **2.83ms → 134µs (21× faster)** via windowed cloning
 — the hot path walks all lines for `total_lines` but clones grapheme `String`s
@@ -84,6 +86,7 @@ for line in &layout.lines {
 - [`PreparedTable`](crates/ratatui-ppalla/src/prepared/prepared_table.rs) — sort permutation + column widths + visible-row windowing
 - [`PreparedViewport`](crates/ratatui-ppalla/src/prepared/prepared_viewport.rs) — search-match index + scroll window + match flags
 - [`PreparedBuffer`](crates/ratatui-ppalla/src/prepared/prepared_buffer.rs) — per-row dirty tracking + merged damage rects
+- [`PreparedBlock`](crates/ratatui-ppalla/src/prepared/prepared_block.rs) — cached border/title drawing (2-2.6× faster than `ratatui::widgets::Block`)
 
 **Widgets** — Bubble Tea/Bubbles-style, built on Ratatui:
 

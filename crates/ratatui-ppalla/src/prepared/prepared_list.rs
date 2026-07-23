@@ -94,7 +94,7 @@ pub struct ListLayout {
 impl ListLayout {
     /// Paint the visible items into `buf` within `area`, one item per row,
     /// applying `style` to each. Each item's `text` is written via
-    /// [`Buffer::set_string`]; rows beyond `area` are clipped.
+    /// `Buffer::set_string`; rows beyond `area` are clipped.
     ///
     /// This is the render bridge for [`PreparedList`], analogous to
     /// [`TextLayout::paint`](super::TextLayout::paint).

@@ -34,6 +34,11 @@
 //! - [`PreparedTable`](crate::prepared::PreparedTable) — sort permutation + column widths
 //! - [`PreparedViewport`](crate::prepared::PreparedViewport) — search-match index + scroll window
 //! - [`PreparedBuffer`](crate::prepared::PreparedBuffer) — per-row dirty tracking + merged damage rects
+//! - [`PreparedBlock`](crate::prepared::PreparedBlock) — cached border/title drawing (2-2.6× faster than `ratatui::widgets::Block`)
+//!
+//! Every layout result has a `paint(buf, area, …)` render bridge that writes
+//! the cached cells into a ratatui [`Buffer`](ratatui::buffer::Buffer), so no
+//! hand-written glyph-walking loop is needed.
 //!
 //! **Widgets** — Bubble Tea/Bubbles-style, built on Ratatui:
 //! - [`elm`] — Elm architecture (Model/Update/View + Command/Message)
