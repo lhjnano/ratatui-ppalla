@@ -77,6 +77,24 @@ multi-agent cost is dominated by `layout` (134 µs/pane × 20 = 2.7 ms) plus pai
 This leaves ~10 ms of the 60fps budget for the AgentBus drain, terminal I/O, and
 safety margin — i.e. the ppalla layer alone keeps N=20 panes within frame budget.
 
+### PreparedBlock vs ratatui Block (render-bridge cache)
+
+`PreparedBlock` caches the border-glyph placement (keyed on width/height/border-type/title,
+**excluding style** so focus-color toggles stay cache hits) and replays it via
+`BlockLayout::paint`. Compared to `ratatui::widgets::Block::render`, which
+recomputes the placement every frame:
+
+| Benchmark | ratatui `Block::render` | `PreparedBlock` paint | Speedup |
+|-----------|--------------------------|-----------------------|---------|
+| Single block (10×5) | 1.02 µs | **497 ns** | **2.05×** |
+| 20-pane blocks (10×5 each) | 20.9 µs | **8.09 µs** | **2.58×** |
+
+In a 20-pane Orca-style frame, switching every pane border from `Block::render`
+to `PreparedBlock::paint` saves ~12.8 µs/frame. Both are a tiny fraction of the
+16.67 ms budget, but the cache design pays off most when borders rarely change
+(the common case): the hot path is a single key compare + a tight `set_symbol`
+loop, no recomputation.
+
 ## Analysis
 
 ### ✅ Win: PreparedLayout cache hit (64.7 ns vs 10 000 ns target)

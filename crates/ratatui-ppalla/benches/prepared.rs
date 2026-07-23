@@ -30,9 +30,9 @@ use ratatui::layout::Constraint;
 use ratatui::widgets::{Paragraph, Wrap};
 use ratatui::{Frame, Terminal};
 use ratatui_ppalla::prepared::{
-    BufferInput, LayoutCtx, ListInput, Preparable, PreparedBuffer, PreparedLayout, PreparedList,
-    PreparedTable, PreparedText, PreparedViewport, SortSpec, TableColumn, TableInput,
-    ViewportInput,
+    BlockSpec, BufferInput, LayoutCtx, ListInput, Preparable, PreparedBlock, PreparedBuffer,
+    PreparedLayout, PreparedList, PreparedTable, PreparedText, PreparedViewport, SortSpec,
+    TableColumn, TableInput, ViewportInput,
 };
 
 /// Build `n` deterministic lines, each exactly `width` ASCII columns wide.
@@ -367,6 +367,90 @@ fn bench_layout_paint_20panes(c: &mut Criterion) {
     });
 }
 
+// ===== Block rendering: PreparedBlock vs ratatui Block =====
+
+/// ratatui Block: recompute border placement + render every frame (baseline).
+fn bench_block_ratatui(c: &mut Criterion) {
+    use ratatui::widgets::{Block, Borders, Widget};
+    let area = ratatui::layout::Rect::new(0, 0, 10, 5);
+    c.bench_function("block_ratatui/10x5", |b| {
+        b.iter_batched(
+            || ratatui::buffer::Buffer::empty(area),
+            |mut buf| {
+                Block::default()
+                    .borders(Borders::ALL)
+                    .title(" pane ")
+                    .render(area, &mut buf);
+                black_box(buf);
+            },
+            BatchSize::SmallInput,
+        );
+    });
+}
+
+/// PreparedBlock: layout cached once, paint each frame (optimized path).
+fn bench_block_prepared(c: &mut Criterion) {
+    let state = PreparedBlock::prepare(BlockSpec::titled(" pane "));
+    let layout = PreparedBlock::layout(&state, LayoutCtx::new(10, 5));
+    let area = ratatui::layout::Rect::new(0, 0, 10, 5);
+    c.bench_function("block_prepared/10x5", |b| {
+        b.iter_batched(
+            || ratatui::buffer::Buffer::empty(area),
+            |mut buf| {
+                layout.paint(&mut buf, area, Default::default(), Default::default());
+                black_box(buf);
+            },
+            BatchSize::SmallInput,
+        );
+    });
+}
+
+/// Orca scenario: 20 panes, each a ratatui Block recomputed every frame.
+fn bench_block_20panes_ratatui(c: &mut Criterion) {
+    use ratatui::widgets::{Block, Borders, Widget};
+    let area = ratatui::layout::Rect::new(0, 0, 10, 5);
+    c.bench_function("block_ratatui_20panes/10x5", |b| {
+        b.iter_batched(
+            || ratatui::buffer::Buffer::empty(area),
+            |mut buf| {
+                for i in 0..20u32 {
+                    Block::default()
+                        .borders(Borders::ALL)
+                        .title(format!(" pane{i} "))
+                        .render(area, &mut buf);
+                }
+                black_box(buf);
+            },
+            BatchSize::SmallInput,
+        );
+    });
+}
+
+/// Orca scenario: 20 panes, each a PreparedBlock paint (cached layouts).
+fn bench_block_20panes_prepared(c: &mut Criterion) {
+    let layouts: Vec<_> = (0..20)
+        .map(|i| {
+            PreparedBlock::layout(
+                &PreparedBlock::prepare(BlockSpec::titled(format!(" pane{i} "))),
+                LayoutCtx::new(10, 5),
+            )
+        })
+        .collect();
+    let area = ratatui::layout::Rect::new(0, 0, 10, 5);
+    c.bench_function("block_prepared_20panes/10x5", |b| {
+        b.iter_batched(
+            || ratatui::buffer::Buffer::empty(area),
+            |mut buf| {
+                for layout in &layouts {
+                    layout.paint(&mut buf, area, Default::default(), Default::default());
+                }
+                black_box(buf);
+            },
+            BatchSize::SmallInput,
+        );
+    });
+}
+
 criterion_group!(
     benches,
     bench_prepare_text,
@@ -379,5 +463,9 @@ criterion_group!(
     bench_layout_table,
     bench_layout_viewport,
     bench_layout_buffer,
+    bench_block_ratatui,
+    bench_block_prepared,
+    bench_block_20panes_ratatui,
+    bench_block_20panes_prepared,
 );
 criterion_main!(benches);

@@ -24,6 +24,9 @@
 //!
 //! - The flagship text primitive [`PreparedText`] (grapheme segmentation +
 //!   Unicode width caching + visible-line wrapping) lives in [`prepared_text`].
+//! - The cached border-drawing primitive [`PreparedBlock`] (per-cell border
+//!   glyph placement + title truncation with a 1-entry cache) lives in
+//!   [`prepared_block`].
 //! - The cached layout-region primitive [`PreparedLayout`] (1-entry cache over
 //!   ratatui constraint evaluation) lives in [`prepared_layout`].
 //! - The damage-tracked cell-grid primitive [`PreparedBuffer`] (per-row dirty
@@ -39,6 +42,7 @@
 
 #![allow(clippy::module_name_repetitions)]
 
+pub mod prepared_block;
 pub mod prepared_buffer;
 pub mod prepared_layout;
 pub mod prepared_list;
@@ -46,6 +50,7 @@ pub mod prepared_table;
 pub mod prepared_text;
 pub mod prepared_viewport;
 
+pub use prepared_block::{BlockLayout, BlockSpec, BorderCell, PreparedBlock, PreparedBlockState};
 pub use prepared_buffer::{
     BufferCell, BufferInput, BufferLayout, PreparedBuffer, PreparedBufferState,
 };
